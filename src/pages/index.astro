@@ -1,0 +1,136 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('posts'))
+	.filter(post => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro">
+				<h1>Hi, I'm Mark.</h1>
+				<p>
+					I write about AI-first development, building software, and navigating the future of work.
+					Currently exploring what it means to ship products when AI does most of the coding.
+				</p>
+			</section>
+
+			{posts.length > 0 && (
+				<section class="posts">
+					<h2>Recent Posts</h2>
+					<ul>
+						{posts.map((post) => (
+							<li>
+								<a href={`/posts/${post.id}/`}>
+									<span class="title">{post.data.title}</span>
+									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+								</a>
+							</li>
+						))}
+					</ul>
+					<a href="/posts" class="view-all">View all posts &rarr;</a>
+				</section>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.intro {
+		margin-bottom: 3rem;
+	}
+
+	.intro h1 {
+		margin-bottom: 1rem;
+	}
+
+	.intro p {
+		color: var(--color-gray-600);
+		font-size: 1.25rem;
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	.posts h2 {
+		font-size: 1.25rem;
+		margin-bottom: 1rem;
+		color: var(--color-gray-500);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.posts ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.posts li {
+		border-bottom: 1px solid var(--color-gray-200);
+	}
+
+	.posts li:last-child {
+		border-bottom: none;
+	}
+
+	.posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 1rem 0;
+		text-decoration: none;
+		transition: background-color 0.15s ease;
+	}
+
+	.posts a:hover {
+		text-decoration: none;
+	}
+
+	.posts a:hover .title {
+		color: var(--color-accent);
+	}
+
+	.title {
+		color: var(--color-gray-900);
+		font-weight: 500;
+	}
+
+	.date {
+		color: var(--color-gray-500);
+		font-size: 0.875rem;
+		flex-shrink: 0;
+	}
+
+	.view-all {
+		display: inline-block;
+		margin-top: 1rem;
+		font-weight: 500;
+	}
+
+	@media (max-width: 640px) {
+		.intro p {
+			font-size: 1.125rem;
+		}
+
+		.posts a {
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+	}
+</style>
