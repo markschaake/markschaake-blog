@@ -10,7 +10,7 @@ I'm not interested in 10x productivity from AI. I'm chasing something bigger.
 
 The safe way to use AI agents - reviewing every output, second-guessing every decision - gets you maybe 2-3x. Useful, but not transformative. The real leverage lives at the edge: trusting the AI enough to move fast, catching mistakes through tight feedback loops rather than constant oversight.
 
-The problem with edges is that you sometimes fall over them. Last week I did.
+The problem with edges is that you sometimes fall over them. This week I did.
 
 The fall cost me 1.5 hours of throwaway development, a credit to my client, and - harder to quantify - some trust. All because of a GET vs POST.
 
