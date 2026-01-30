@@ -24,7 +24,7 @@ importers:
         specifier: ^5.17.1
         version: 5.17.1(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.1)(typescript@5.9.3)
       sharp:
-        specifier: ^0.34.3
+        specifier: ^0.34.5
         version: 0.34.5
       tailwindcss:
         specifier: ^4.1.18

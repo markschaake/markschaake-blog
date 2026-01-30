@@ -7,7 +7,7 @@ import Header from '../../components/Header.astro';
 import { SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('posts'))
-	.filter(post => !post.data.draft)
+	.filter(post => import.meta.env.DEV || !post.data.draft)
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
