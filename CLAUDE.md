@@ -53,3 +53,10 @@ When writing or editing blog content, follow these guidelines:
 - Essential, not fluffy. Every sentence earns its place.
 - Direct statements over hedged language
 - Concrete over abstract when possible
+- No advice-giving - observe and analyze, don't prescribe
+- Don't address the reader directly (avoid "you should", "if you're considering", etc.)
+- Avoid phrases that imply prior dishonesty (avoid "the honest answer", "to be frank", "truthfully", etc.)
+
+### Citations
+- Always include links to referenced analyses, studies, or other people's work
+- Links should open in new tabs using external link format: `[text](url){:target="_blank"}`
