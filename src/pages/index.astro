@@ -133,4 +133,22 @@ const posts = (await getCollection('posts'))
 			gap: 0.25rem;
 		}
 	}
+
+	@media (prefers-color-scheme: dark) {
+		.intro p {
+			color: var(--color-gray-400);
+		}
+
+		.posts li {
+			border-bottom-color: var(--color-gray-700);
+		}
+
+		.title {
+			color: var(--color-gray-100);
+		}
+
+		.posts a:hover .title {
+			color: #60a5fa;
+		}
+	}
 </style>

@@ -86,4 +86,23 @@ import HeaderLink from './HeaderLink.astro';
 			display: none;
 		}
 	}
+
+	@media (prefers-color-scheme: dark) {
+		header {
+			background: var(--color-gray-900);
+			border-bottom-color: var(--color-gray-700);
+		}
+
+		.site-title {
+			color: var(--color-gray-50);
+		}
+
+		.social-links a {
+			color: var(--color-gray-400);
+		}
+
+		.social-links a:hover {
+			color: var(--color-gray-50);
+		}
+	}
 </style>
