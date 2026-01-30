@@ -97,4 +97,34 @@ const posts = (await getCollection('posts'))
 		color: var(--color-gray-500);
 		font-size: 0.875rem;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		.posts li {
+			border-bottom-color: var(--color-gray-700);
+		}
+
+		.title {
+			color: var(--color-gray-100);
+		}
+
+		.posts a:hover .title {
+			color: #60a5fa;
+		}
+
+		.posts a:visited .title {
+			color: var(--color-gray-400);
+		}
+
+		.posts a:visited:hover .title {
+			color: #60a5fa;
+		}
+
+		.description {
+			color: var(--color-gray-400);
+		}
+
+		.posts a:visited .description {
+			color: var(--color-gray-500);
+		}
+	}
 </style>
