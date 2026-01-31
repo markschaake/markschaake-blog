@@ -28,4 +28,16 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	a.active {
 		color: var(--color-accent);
 	}
+
+	@media (prefers-color-scheme: dark) {
+		a {
+			color: var(--color-gray-400);
+		}
+		a:hover {
+			color: var(--color-gray-50);
+		}
+		a.active {
+			color: #60a5fa;
+		}
+	}
 </style>
