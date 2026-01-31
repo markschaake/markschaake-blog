@@ -16,7 +16,7 @@ The fall cost me 1.5 hours of throwaway development, a credit to my client, and 
 
 ## The Setup
 
-I was building an AI classification feature for a client that depended on a third-party API. This API operates in legally gray territory; competitors have been shut down. It had recently changed versions, and the fields we needed were coming back empty.
+I was building an AI classification feature for a client that depended on a third-party API. It had recently changed versions, and the fields we needed were coming back empty.
 
 Stakes were high. Without this data, the feature couldn't work. This was exactly the kind of ambiguous debugging task where AI agents shine - or where they can lead you confidently off a cliff.
 
@@ -24,7 +24,7 @@ Stakes were high. Without this data, the feature couldn't work. This was exactly
 
 I asked Claude to investigate. It dove in, examined the responses, and delivered a verdict with characteristic confidence: "The provider no longer has access to this data."
 
-That made sense. Given the legal pressures in this space, it was plausible they'd been forced to remove certain data points.
+That made sense.
 
 I asked Claude to verify. It ran cURL tests, examined response structures, and produced a detailed markdown report. Responses came back 200 OK. Data returned. But the target fields? Empty.
 
