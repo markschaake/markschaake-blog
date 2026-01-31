@@ -1,5 +1,6 @@
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import rss from '@astrojs/rss';
+import sanitizeHtml from 'sanitize-html';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 export async function GET(context) {
@@ -11,11 +12,17 @@ export async function GET(context) {
 		title: SITE_TITLE,
 		description: SITE_DESCRIPTION,
 		site: context.site,
-		items: posts.map((post) => ({
-			title: post.data.title,
-			pubDate: post.data.pubDate,
-			description: post.data.description,
-			link: `/posts/${post.id}/`,
+		items: await Promise.all(posts.map(async (post) => {
+			const { html } = await render(post);
+			return {
+				title: post.data.title,
+				pubDate: post.data.pubDate,
+				description: post.data.description,
+				link: `/posts/${post.id}/`,
+				content: sanitizeHtml(html, {
+					allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img'])
+				}),
+			};
 		})),
 	});
 }
