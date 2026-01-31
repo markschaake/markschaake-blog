@@ -68,7 +68,7 @@ This wasn't an AI catastrophe. It was a mundane mistake amplified by speed and c
 
 **Speed amplifies distance past the edge.** The formula is brutal: Confidence × Speed = Distance traveled when wrong. I had an alternative solution built before support even replied. That's the value proposition of AI-assisted development - and the risk. You need braking mechanisms proportional to your speed.
 
-**The edge moves.** This might be the hardest part. AI capabilities shift constantly - model updates, service degradation, the inherent stochasticity of responses. And the movement isn't always forward. [Independent benchmarks](https://marginlab.ai/trackers/claude-code/) have detected statistically significant performance regressions in Claude Code over 30-day windows. A workflow that kept you safely on the right side last month might cross the edge today. You can't calibrate once and forget. Staying close to the edge requires ongoing navigation.
+**The edge moves.** This might be the hardest part. AI capabilities shift constantly - model updates, service degradation, the inherent stochasticity of responses. And the movement isn't always forward. [Independent benchmarks](https://marginlab.ai/trackers/claude-code/) have detected statistically significant performance regressions in Claude Code over 30-day windows (based on daily SWE-Bench-Pro evaluations). A workflow that kept you safely on the right side last month might cross the edge today. You can't calibrate once and forget. Staying close to the edge requires ongoing navigation.
 
 ## The Takeaway
 

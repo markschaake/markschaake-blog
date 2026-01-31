@@ -6,7 +6,7 @@ draft: false
 tags: ["ai", "consulting", "software"]
 ---
 
-AI tools have collapsed the cost of building software. Anthropic shipped Cowork in 10 days. Cursor's agents produced 3 million lines of code in a week. I built a 200,000-line TypeScript MVP in 7 weeks - work that would have taken a team 12-18 months before these tools existed.
+AI tools have collapsed the cost of building software. I built a 200,000-line TypeScript MVP in 7 weeks - work that would have taken a team 12-18 months before these tools existed. <a href="https://fortune.com/2026/01/29/100-percent-of-code-at-anthropic-and-openai-is-now-ai-written-boris-cherny-roon/" target="_blank" rel="noopener noreferrer">Anthropic reports 70-90% of code</a> at the company is now AI-written. Microsoft says AI generates about 30% of theirs.
 
 If you can wield these tools, there's an obvious opportunity. Businesses need custom software. They don't have engineers who know how to use AI agents effectively. Consultants who can bridge that gap should find work.
 
