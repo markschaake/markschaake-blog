@@ -2,7 +2,7 @@
 title: "The Assumed Room"
 description: "The difference between political conviction and political assumption - and what happens to the people who think differently but stay quiet."
 pubDate: 2026-02-05
-draft: true
+draft: false
 tags: ["culture"]
 ---
 
