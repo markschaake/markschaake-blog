@@ -7,7 +7,7 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'posts'>['data'];
 
-const { title, description, pubDate, updatedDate, tags, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, handwritten, heroImage } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,6 +28,10 @@ const { title, description, pubDate, updatedDate, tags, heroImage } = Astro.prop
 								(Updated: <FormattedDate date={updatedDate} />)
 							</span>
 						)}
+						{handwritten
+							? <span class="badge handwritten">handwritten</span>
+							: <span class="badge ai-assisted">AI-assisted</span>
+						}
 					</div>
 					{tags && tags.length > 0 && (
 						<div class="tags">
@@ -80,5 +84,36 @@ const { title, description, pubDate, updatedDate, tags, heroImage } = Astro.prop
 		border-radius: 9999px;
 		font-size: 0.8125rem;
 		font-weight: 500;
+	}
+
+	.badge {
+		display: inline-block;
+		padding: 0.125rem 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		margin-left: 0.75rem;
+	}
+
+	.handwritten {
+		background-color: #dbeafe;
+		color: #1e40af;
+	}
+
+	.ai-assisted {
+		background-color: var(--color-gray-100);
+		color: var(--color-gray-500);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.handwritten {
+			background-color: #1e3a5f;
+			color: #93c5fd;
+		}
+
+		.ai-assisted {
+			background-color: var(--color-gray-700);
+			color: var(--color-gray-400);
+		}
 	}
 </style>

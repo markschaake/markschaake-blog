@@ -26,6 +26,12 @@ const posts = (await getCollection('posts'))
 					I write about AI-first development, building software, and navigating the future of work.
 					Currently exploring what it means to ship products when AI does most of the coding.
 				</p>
+				<p>
+					Most of what you'll find here is written with AI - I shape the ideas and direction, and
+					the AI helps me get them down faster than I ever could alone. Without it, most of these
+					posts would still be half-formed notes in my head. When something is written entirely by
+					hand, I'll mark it.
+				</p>
 			</section>
 
 			{posts.length > 0 && (
@@ -35,7 +41,13 @@ const posts = (await getCollection('posts'))
 						{posts.map((post) => (
 							<li>
 								<a href={`/posts/${post.id}/`}>
-									<span class="title">{post.data.title}</span>
+									<span class="title">
+										{post.data.title}
+										{post.data.handwritten
+											? <span class="badge handwritten">handwritten</span>
+											: <span class="badge ai-assisted">AI-assisted</span>
+										}
+									</span>
 									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
 								</a>
 							</li>
@@ -111,6 +123,26 @@ const posts = (await getCollection('posts'))
 		font-weight: 500;
 	}
 
+	.badge {
+		display: inline-block;
+		padding: 0.125rem 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		margin-left: 0.5rem;
+		vertical-align: middle;
+	}
+
+	.handwritten {
+		background-color: #dbeafe;
+		color: #1e40af;
+	}
+
+	.ai-assisted {
+		background-color: var(--color-gray-100);
+		color: var(--color-gray-500);
+	}
+
 	.date {
 		color: var(--color-gray-500);
 		font-size: 0.875rem;
@@ -149,6 +181,16 @@ const posts = (await getCollection('posts'))
 
 		.posts a:hover .title {
 			color: #60a5fa;
+		}
+
+		.handwritten {
+			background-color: #1e3a5f;
+			color: #93c5fd;
+		}
+
+		.ai-assisted {
+			background-color: var(--color-gray-700);
+			color: var(--color-gray-400);
 		}
 	}
 </style>

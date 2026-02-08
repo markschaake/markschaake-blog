@@ -1,8 +1,8 @@
 ---
 title: "Finding the Edge of AI Trust"
 description: "What happens when you over-trust your AI agents and misdirect a client's leadership team."
-pubDate: 2026-01-30
-draft: true
+pubDate: 2026-02-08
+draft: false
 tags: ["ai", "claude-code", "lessons"]
 ---
 

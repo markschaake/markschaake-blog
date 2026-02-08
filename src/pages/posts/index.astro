@@ -27,7 +27,14 @@ const posts = (await getCollection('posts'))
 					{posts.map((post) => (
 						<li>
 							<a href={`/posts/${post.id}/`}>
-								<span class="title">{post.data.title}</span>
+								<span class="title">
+									{post.data.title}
+									{post.data.handwritten
+										? <span class="badge handwritten">handwritten</span>
+										: <span class="badge ai-assisted">AI-assisted</span>
+									}
+									{post.data.draft && <span class="badge draft">draft</span>}
+								</span>
 								<span class="description">{post.data.description}</span>
 								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
 							</a>
@@ -85,6 +92,31 @@ const posts = (await getCollection('posts'))
 		margin-bottom: 0.5rem;
 	}
 
+	.badge {
+		display: inline-block;
+		padding: 0.125rem 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		margin-left: 0.5rem;
+		vertical-align: middle;
+	}
+
+	.handwritten {
+		background-color: #dbeafe;
+		color: #1e40af;
+	}
+
+	.ai-assisted {
+		background-color: var(--color-gray-100);
+		color: var(--color-gray-500);
+	}
+
+	.draft {
+		background-color: #fef3c7;
+		color: #92400e;
+	}
+
 	.description {
 		display: block;
 		color: var(--color-gray-600);
@@ -117,6 +149,21 @@ const posts = (await getCollection('posts'))
 
 		.posts a:visited:hover .title {
 			color: #60a5fa;
+		}
+
+		.handwritten {
+			background-color: #1e3a5f;
+			color: #93c5fd;
+		}
+
+		.ai-assisted {
+			background-color: var(--color-gray-700);
+			color: var(--color-gray-400);
+		}
+
+		.draft {
+			background-color: #78350f;
+			color: #fde68a;
 		}
 
 		.description {
