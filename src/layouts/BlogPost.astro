@@ -41,6 +41,9 @@ const { title, description, pubDate, updatedDate, tags, handwritten, heroImage }
 						</div>
 					)}
 				</header>
+				{heroImage && (
+					<img src={heroImage.src} alt="" class="hero-image" width={heroImage.width} height={heroImage.height} />
+				)}
 				<div class="prose">
 					<slot />
 				</div>
@@ -51,6 +54,13 @@ const { title, description, pubDate, updatedDate, tags, handwritten, heroImage }
 </html>
 
 <style>
+	.hero-image {
+		width: 100%;
+		height: auto;
+		border-radius: 0.5rem;
+		margin-bottom: 2rem;
+	}
+
 	.post-header {
 		margin-bottom: 2rem;
 		padding-bottom: 1.5rem;
