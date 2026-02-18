@@ -4,6 +4,7 @@ description: "The Codex-vs-Claude-Code debate is comparing the wrong layer."
 pubDate: 2026-02-18
 draft: true
 tags: ["ai", "claude-code", "methodology"]
+heroImage: ./the-layer-above.webp
 ---
 
 The Codex-vs-Claude-Code discourse has been hard to avoid lately. OpenAI launched GPT-5.3-Codex with a dedicated desktop app, and the takes landed fast - Codex is the autonomous co-worker, Claude Code is the interactive collaborator. The framing is tidy: if you can write clean specs, hand them to Codex and walk away. If your work is messier, more exploratory, more iterative, Claude Code meets you where you are. Pick the right tool for the job.
