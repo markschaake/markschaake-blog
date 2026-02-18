@@ -13,7 +13,7 @@ I installed Codex and was about to start testing it when a familiar feeling pull
 
 ---
 
-The models underneath are converging. <a href="https://www.vals.ai/benchmarks/swebench" target="_blank" rel="noopener noreferrer">SWE-bench Verified</a> has Opus 4.5 at 80.9%, Opus 4.6 at 80.8%, and GPT-5.2 Codex at 80.0% - essentially a dead heat. The capability gap that might justify switching tools isn't in the numbers. Where the tools actually differ is in the layer above the model: the interface, the defaults, the philosophy of how much autonomy the tool assumes out of the box.
+The models underneath are converging. <a href="https://www.vals.ai/benchmarks/swebench" target="_blank" rel="noopener noreferrer">SWE-bench Verified</a> has Opus 4.5 at 80.9%, Opus 4.6 at 80.8%, and GPT-5.2 Codex at 80.0% - essentially a dead heat. The capability gap that might justify switching tools isn't in the numbers. Where the tools actually differ is in the harness - the layer above the model: the interface, the defaults, the philosophy of how much autonomy the tool assumes out of the box. Claude Code, Codex, Pi - different harnesses, different fittings, same converging capability pool underneath.
 
 Some of the analysis being published draws broad conclusions from narrow evidence. A <a href="https://blog.nilenso.com/blog/2026/02/12/codex-cli-vs-claude-code-on-autonomy/" target="_blank" rel="noopener noreferrer">Nilenso blog post</a> characterized Codex as a "scripting-proficient intern" and Claude Code as a "senior developer who asks clarifying questions" - but this was based largely on reading system prompts, not extended use. In practice, Claude Code with permissions bypassed and a clear plan doesn't pause to ask anything. It executes. The characterization describes a default out-of-the-box posture, not how the tool actually behaves once configured for autonomous work.
 
@@ -25,7 +25,7 @@ The framing that Codex is the right tool for autonomous, spec-driven work treats
 
 I've been building on top of Claude Code for the better part of a year. The result is a <a href="/posts/expedition-excursion-errand">workflow framework</a> that ranges from fully hands-off parallel execution across git worktrees to conversational single-agent work - the kind of thing that accrues naturally when you stay with a tool long enough to understand where its edges are and how to extend them. The "hand it off and walk away" experience isn't unique to Codex. It's what depth produces on any capable foundation.
 
-So when the comparison discourse says Codex is better for autonomous work and Claude Code is better for iterative work, what it's really comparing is one tool's out-of-the-box experience against another tool's _customized_ experience. That's not a comparison of the tools - it's a comparison of investment.
+So when the comparison discourse says Codex is better for autonomous work and Claude Code is better for iterative work, what it's really comparing is one harness's out-of-the-box experience against another harness's _customized_ experience. That's not a comparison of harnesses - it's a comparison of how fitted each one is.
 
 ---
 
@@ -47,6 +47,6 @@ But the deeper investment isn't in the files - it's in the intuition - the calib
 
 ---
 
-I installed Codex and never spun it up. I'd spent a few hours with <a href="https://github.com/badlogic/pi-mono" target="_blank" rel="noopener noreferrer">Pi</a> not long before that - impressed by its customizability, the kind of tool that appeals to the Emacs-tinkerer part of my brain - but felt the same pull back toward the work already in progress. The tension arrived at the moment of installation, not after hours of evaluation. What kept stopping me wasn't loyalty to Claude Code or certainty that I'd chosen right. It was the recognition that constant sampling has its own cost, and that I hadn't yet been deliberate about when to look up from the work and when to stay in it.
+I installed Codex and never spun it up. I'd spent a few hours with <a href="https://github.com/badlogic/pi-mono" target="_blank" rel="noopener noreferrer">Pi</a> not long before that - another harness, this one built for customizability, the kind that appeals to the Emacs-tinkerer part of my brain - but felt the same pull back toward the work already in progress. The tension arrived at the moment of installation, not after hours of evaluation. What kept stopping me wasn't loyalty to Claude Code or certainty that I'd chosen right. It was the recognition that constant sampling has its own cost, and that I hadn't yet been deliberate about when to look up from the work and when to stay in it.
 
 The landscape will keep moving. New models, new tools, new pricing tiers arriving faster than anyone can evaluate them. But the tools are converging on capability underneath, which means the specific foundation matters less over time. What doesn't converge is what gets built on top - the workflow layer, the accumulated judgment, the infrastructure that compounds with use. The comparison discourse keeps debating the foundation, but the leverage was always in the layer above.
