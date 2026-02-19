@@ -2,7 +2,7 @@
 title: "From Assisted to Agentic"
 description: "AI tool adoption is nearly universal among engineering teams, but the workflows underneath haven't moved."
 pubDate: 2026-02-18
-draft: true
+draft: false
 tags: ["ai", "engineering", "methodology"]
 ---
 
