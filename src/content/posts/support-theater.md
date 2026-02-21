@@ -30,7 +30,7 @@ She asked if I had attempted to redeem the gift card. The thing I'd explained in
 
 Then she wrote this sentence: "After we receive the information you have provided, we will be happy to investigate further."
 
-Read that again. After we receive the information you have _provided_. She acknowledges the information exists - I've provided it - and then says they need to receive it before they can act. It's contradictory within a single sentence, and it tells you everything about what's happening on the other end of this thread.
+She acknowledges the information exists - I've _provided_ it - and then says they need to receive it before they can act. It's contradictory within a single sentence.
 
 ---
 
@@ -42,4 +42,12 @@ What makes this worse is the context. Meta built the parent-managed account syst
 
 $90 isn't a lot of money. But it's birthday money and a dad's attempt to work around a broken system, all locked behind a support process that exists to look like support without functioning as support. The cruelty isn't in the dollar amount - it's in the theater.
 
-My son has concluded that Meta stole his birthday money. He's already asking for a different VR headset for Christmas.
+---
+
+Then the account got suspended. Age verification, according to Meta - triggered, I can only assume, by the support thread itself. I asked for help, asked for escalation, and the system responded by locking the account.
+
+To unsuspend, I need to enter my son's birthday - the exact date I used when I created the account. I don't use my kids' real birthdays on platforms - I use dates close to their real ones because I don't want their personal information sitting in systems I don't control. My son is well past Meta's age threshold, but I can't remember the precise date I entered years ago, and Meta's verification requires an exact match. No alternative path, no human to work through it with.
+
+The account is effectively bricked. Not because my son is too young, not because we violated any policy - because I asked for support, something in the process flagged the account, and the recovery gate assumes perfect recall of a date I deliberately made inexact for privacy reasons.
+
+My son bought his Quest with his own money last summer. He's concluded that Meta stole his birthday money and his account. We're buying a <a href="https://store.steampowered.com/sale/steamframe" target="_blank" rel="noopener noreferrer">Steam Frame</a> as soon as they're available, and Meta won't see another dollar from us.
