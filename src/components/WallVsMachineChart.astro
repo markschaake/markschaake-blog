@@ -1,0 +1,153 @@
+---
+---
+
+<div class="chart-container">
+  <div class="chart-header">
+    <div class="chart-title">Wall vs Machine Time</div>
+    <div class="chart-subtitle">Daily hours over past 60 days</div>
+  </div>
+  <canvas id="wall-vs-machine-chart"></canvas>
+</div>
+
+<script>
+  import { Chart, registerables } from 'chart.js';
+  Chart.register(...registerables);
+
+  const labels = [
+    '1/11', '1/12', '1/13', '1/14', '1/15', '1/16', '1/17', '1/18',
+    '1/19', '1/20', '1/21', '1/22', '1/23', '1/24', '1/25', '1/26',
+    '1/27', '1/28', '1/29', '1/30', '1/31', '2/1', '2/2', '2/3',
+    '2/4', '2/5', '2/6', '2/7', '2/8', '2/9', '2/10', '2/11',
+    '2/12', '2/13', '2/14', '2/15', '2/16', '2/17', '2/18', '2/19',
+  ];
+
+  // Planning phases: machine ≈ wall (ratio ~1.0)
+  // Burst phases: machine spikes above wall (ratio 1.5-2.0+)
+  // Off days scattered throughout
+  const wallHours = [
+    0.5, 0, 3, 4.5, 5, 5.5, 8, 13,       // ramp-up then first burst
+    10, 3, 0, 3.5, 4, 5, 7, 6.5,          // recovery and planning
+    3, 0, 2, 5, 6.5, 5, 7, 9,             // planning then second burst
+    8, 4, 0, 0, 3, 4.5, 5.5, 4,           // quiet then ramp
+    5, 7, 8, 6, 8, 7.5, 5, 3,             // sustained elevated work
+  ];
+
+  const machineHours = [
+    0.5, 0, 3, 4.5, 5.5, 6, 11, 17,       // first burst - machine spikes
+    13, 3.5, 0, 3.5, 4, 5.5, 8.5, 7.5,    // recovery - ratio drifts back
+    3.5, 0, 2, 5.5, 7.5, 5.5, 9.5, 14,    // second burst - bigger divergence
+    11, 5, 0, 0, 3.5, 5, 6.5, 5,          // quiet
+    7, 10, 11, 8, 13, 12, 8, 4,           // sustained - machine consistently above
+  ];
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const tickColor = isDark ? '#9ca3af' : '#6b7280';
+
+  const ctx = document.getElementById('wall-vs-machine-chart') as HTMLCanvasElement;
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Machine Hours',
+          data: machineHours,
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          fill: false,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 3,
+          borderWidth: 2,
+        },
+        {
+          label: 'Wall Hours',
+          data: wallHours,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          fill: false,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 3,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2.5,
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: tickColor,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 20,
+            font: { size: 12 },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: ${context.parsed.y}h`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 10,
+            font: { size: 11 },
+          },
+        },
+        y: {
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            callback: (value) => `${value}h`,
+            font: { size: 11 },
+          },
+          beginAtZero: true,
+          suggestedMax: 20,
+        },
+      },
+    },
+  });
+</script>
+
+<style>
+  .chart-container {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-header {
+    padding: 0 0.25rem 0.75rem;
+  }
+
+  .chart-title {
+    color: #f3f4f6;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .chart-subtitle {
+    color: #9ca3af;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+</style>
