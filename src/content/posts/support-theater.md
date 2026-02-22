@@ -46,7 +46,7 @@ $90 isn't a lot of money. But it's birthday money and a dad's attempt to work ar
 
 Then the account got suspended. Age verification, according to Meta - triggered, I can only assume, by the support thread itself. I asked for help, asked for escalation, and the system responded by locking the account.
 
-To unsuspend, I need to enter my son's birthday - the exact date I used when I created the account. I don't use my kids' real birthdays on platforms - I use dates close to their real ones because I don't want their personal information sitting in systems I don't control. My son is well past Meta's age threshold, but I can't remember the precise date I entered years ago, and Meta's verification requires an exact match. No alternative path, no human to work through it with.
+To unsuspend, I need to enter my son's birthday - the exact date I used when I created the account. I don't use my kids' real birthdays on platforms - I use dates close to their real ones because I don't want their personal information sitting in systems I don't control. My son is well past Meta's age threshold, but I can't remember the precise date I entered when we created his account, and Meta's verification requires an exact match. No alternative path, no human to work through it with.
 
 The account is effectively bricked. Not because my son is too young, not because we violated any policy - because I asked for support, something in the process flagged the account, and the recovery gate assumes perfect recall of a date I deliberately made inexact for privacy reasons.
 
