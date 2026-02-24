@@ -1,15 +1,16 @@
 ---
 title: "Counting Machine Hours"
 description: "We have frameworks for describing agentic engineering maturity. We don't have good ways to measure it - and self-assessment is broken."
-pubDate: 2026-02-20
+pubDate: 2026-02-24
 draft: false
 tags: ["ai", "engineering", "methodology"]
 heroImage: ./counting-machine-hours.webp
 ---
 import WallVsMachineChart from '../../components/WallVsMachineChart.astro';
 import MachineWallRatioChart from '../../components/MachineWallRatioChart.astro';
+import RatioVsChurnChart from '../../components/RatioVsChurnChart.astro';
 
-I've been tracking my machine time. Not in the abstract - literal machine hours, measured by hooks in my Claude Code setup that fire events to an API whenever a session starts, a tool executes, or a session ends. A git integration ties commits back to clusters of sessions on the same repo. The whole thing is maybe 150 lines of bash and an API endpoint, running quietly in the background while I work.
+I've been tracking my machine time. Not in the abstract - literal machine hours, measured by hooks in my Claude Code setup that fire events to an API whenever a session starts, a tool executes, or a session ends. A git integration ties commits back to clusters of sessions on the same repo. The whole thing is maybe 150 lines of bash and an API endpoint, took an afternoon to build, and runs quietly in the background while I work.
 
 The ratio of machine hours to wall hours across my projects has been trending toward 1.5 - meaning for every hour of clock time on a project, the machines are running for about ninety minutes. It's a parallelism indicator, not a production measure - it says nothing about what those machine hours produce, only that multiple agents are working simultaneously.
 
@@ -35,11 +36,7 @@ Dan Shapiro <a href="https://www.danshapiro.com/blog/2026/01/the-five-levels-fro
 
 The framework is useful because it gives honest language to a conversation that's been drowning in marketing. What it doesn't give is a way to know which level someone is actually at. Self-assessment is <a href="/posts/from-assisted-to-agentic">demonstrably unreliable</a> - developers consistently misjudge not just the magnitude of AI's effect on their productivity, but the direction.
 
-Asking a team "what level are you at?" produces answers that skew optimistic by a meaningful margin. The question isn't how productive someone _feels_. It's what the data says about how they're actually working.
-
----
-
-The measurement infrastructure is lighter than it sounds - shell scripts hooked into Claude Code events, an API endpoint that clusters overlapping sessions on the same repo into groups, and a git integration that maps commits to the sessions that produced them. The whole thing took an afternoon to build and runs in the background without my thinking about it.
+Shapiro himself notes that every level "feels like you are done" - each stage of adoption feels complete from the inside. In conversations with engineering leaders, I've seen the same thing: teams that describe themselves as further along in agentic leverage than their workflows suggest. The question isn't how productive someone _feels_. It's what the data says about how they're actually working.
 
 ---
 
@@ -51,7 +48,7 @@ Session concurrency is a clear signal. When I started with Claude Code, all my w
 
 These patterns suggest something like a natural progression, visible in the data before anyone reports it:
 
-An engineer early in the transition shows a machine:wall ratio at 1.0 - one session at a time, one project at a time, the agent as a fast pair programmer. This is where most teams start, and where - per Shapiro's estimate - about 90% of developers who consider themselves AI-native are still operating. The signal is in what _isn't_ happening: no concurrency, no planning-to-burst cycles, no separation between the human's attention and the machine's execution.
+An engineer early in the transition shows a machine:wall ratio at 1.0 - one session at a time, one project at a time, the agent as a fast pair programmer. This is where most teams start, and where - per <a href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/" target="_blank" rel="noopener noreferrer">Shapiro's estimate</a> - about 90% of developers who consider themselves AI-native are still operating. The signal is in what _isn't_ happening: no concurrency, no planning-to-burst cycles, no separation between the human's attention and the machine's execution.
 
 The shift toward orchestration shows up as the ratio lifting above 1.0 - concurrent sessions appearing for the first time, multiple terminal windows working the same codebase or different projects in parallel. The developer is directing agents, not writing code alongside one. Planning phases get longer relative to execution phases, because the developer is learning that investment in decomposition pays off in parallel execution downstream.
 
@@ -61,7 +58,19 @@ At this point the developer's primary output is specifications and judgment, not
 
 ---
 
-In a team context, these behavioral signals look less like a dashboard and more like a conversation prompt. The shifts are gradual - a machine:wall ratio lifting from 1.0 to 1.2 over three weeks as someone starts running concurrent sessions for the first time. Planning share increasing as the investment in specification starts to precede execution. An engineer whose edit-loop frequency is high - the same files getting revised repeatedly within a session - might be at a different point in the transition than one whose sessions are heavy on planning tools and light on edits. The data doesn't diagnose anything, but it makes patterns visible that would otherwise stay hidden behind the same commit log.
+The progression above is entirely about throughput and parallelism. A team could look good on every one of those signals while producing code that keeps getting reworked. The machine:wall ratio says nothing about whether the work sticks.
+
+Churn measures that - it's one way to quantify slop. Files modified and then modified again within a short window are a reasonable proxy for _rework_ - code that didn't stick the first time. Not every re-edit is slop - legitimate features cause refactors too - but persistent churn on recently touched files is a signal worth watching. The git integration already tracks which commits came from which sessions, so computing churn against the same timeline as the ratio is straightforward. I want that number minimal and trending down - as models improve, as the harness gets tighter, as the planning process learns what level of specification produces output that holds.
+
+A rising machine:wall ratio paired with flat or declining churn is the signal of genuine progress - more parallel execution, and the output holds up. A rising ratio paired with rising churn means the parallelism is producing work that doesn't survive contact with reality. Agents stepping on each other, specifications undercooked, review too thin to catch problems before they compound. That pattern looks productive on any throughput dashboard. The churn data shows it isn't.
+
+The planning-to-burst cycle should predict this - sessions starting with thorough decomposition producing lower-churn commits downstream, sessions that skip planning and go straight to parallel execution producing high throughput and high churn. I don't have enough data yet to confirm the pattern, but it's the hypothesis the measurement is designed to test.
+
+<RatioVsChurnChart />
+
+---
+
+In a team context, these behavioral signals look less like a dashboard and more like a conversation prompt. The shifts are gradual - a machine:wall ratio lifting from 1.0 to 1.2 over three weeks as someone starts running concurrent sessions for the first time. Planning share increasing as the investment in specification starts to precede execution. An engineer whose edit-loop frequency is high - the same files getting revised repeatedly within a session - might be at a different point in the transition than one whose sessions are heavy on planning tools and light on edits. Churn rate layered on top of the ratio sharpens the picture further - two engineers with identical machine:wall ratios look very different when one has 8% churn and the other has 25%. The data doesn't diagnose anything, but it makes patterns visible that would otherwise stay hidden behind the same commit log.
 
 An engineer whose ratio has sat at 1.0 for weeks might not have made the shift from writing alongside the agent to directing it - or might be deep in a planning phase that hasn't reached execution yet. The same number means different things depending on where someone is in their work. The measurement doesn't replace the conversation. It gives the conversation something concrete to start from.
 
