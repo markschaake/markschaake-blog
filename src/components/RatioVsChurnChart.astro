@@ -3,8 +3,8 @@
 
 <div class="chart-container">
   <div class="chart-header">
-    <div class="chart-title">Ratio vs Churn</div>
-    <div class="chart-subtitle">7-day trailing ratio and 7-day file churn rate</div>
+    <div class="chart-title">Ratio vs Rework</div>
+    <div class="chart-subtitle">7-day trailing ratio and session-relative rework rate</div>
   </div>
   <canvas id="ratio-vs-churn-chart"></canvas>
 </div>
@@ -37,7 +37,7 @@
     7, 10, 11, 8, 13, 12, 8, 4,
   ];
 
-  // Daily churn: fraction of files touched that were re-modified within 7 days
+  // Daily session rework: fraction of files from prior sessions re-modified in subsequent sessions
   // Low during well-planned bursts, spikes during rushed parallel execution
   const dailyChurnRaw = [
     0.08, 0, 0.10, 0.12, 0.11, 0.14, 0.18, 0.22,  // first burst: churn rises with throughput
@@ -113,7 +113,7 @@
           yAxisID: 'y',
         },
         {
-          label: '7-Day Churn Rate',
+          label: 'Session Rework Rate',
           data: churnRates,
           borderColor: '#f43f5e',
           backgroundColor: 'rgba(244, 63, 94, 0.1)',
