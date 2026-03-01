@@ -1,0 +1,95 @@
+---
+title: "The Commit Message as Data Pipeline"
+description: "The commit message - traditionally a developer afterthought - becomes the richest instrumentation point in an agentic workflow when the agent writes it."
+pubDate: 2026-03-01
+draft: true
+tags: ["ai", "engineering", "methodology"]
+heroImage: ./commit-as-data-pipeline.webp
+---
+import ChurnVsReportedReworkChart from '../../components/ChurnVsReportedReworkChart.astro';
+import WorkCompositionChart from '../../components/WorkCompositionChart.astro';
+
+I had a number on my dashboard that tracked whether my agents' output held - files committed in one session and re-edited within a week in a later session, weighted by edit frequency. It was the most useful signal in my <a href="/posts/what-the-numbers-show">agentic workflow tracking</a>, and it was blunt enough to bother me.
+
+The thing that changed wasn't a better algorithm for detecting rework. It was noticing where the information already existed.
+
+---
+
+Every commit in my workflow is produced by a Claude Code skill that analyzes the staged diff, determines the nature of the changes, and writes a conventional commit message. The committing agent isn't the one that did the work - I run the commit skill in a fresh session, so it's reading the diff cold, with no memory of the decisions that produced it. But the diff is the evidence, and the agent reading it is fluent in code. It can see what changed, infer the intent from the structure of the changes, and classify the work from the same analysis it already performs to write the commit message.
+
+Adding a structured trailer to the end of that message costs almost nothing. The analysis is already happening. The classification is a structured summary of what the diff reveals.
+
+---
+
+The <a href="/posts/what-the-numbers-show">churn metric</a> I built first did one thing well - it surfaced files that kept getting re-edited across sessions within a short window. But it had specific blindnesses that became harder to ignore the more I used it.
+
+It couldn't distinguish planned iteration from failure. A feature that legitimately spans two sessions and a specification that didn't hold both look identical - same file, edited again within a week. The metric treated a documentation edit and a rework edit identically, because it only saw files, not intent. And it said nothing about the _kind_ of work being done. I could see that rework was happening. I couldn't see what else was happening alongside it - how much testing accompanied the feature work, how much was proactive restructuring versus reactive correction.
+
+The gap wasn't in the detection. It was in the granularity.
+
+---
+
+Every commit now ends with a `Work:` trailer - a structured breakdown of what kind of effort the changeset represents. Seven categories: feature, fix, refactor, rework, test, docs, ops. Percentages that sum to 100%, rounded to the nearest 5%, weighted by effort and complexity rather than line count. Only categories with non-zero values appear.
+
+A straightforward feature commit looks like this:
+
+```
+feat: add session duration tracking to dashboard
+
+Implements duration display with rollup by day and week.
+Uses existing TimeMetrics service for data.
+
+Work: feature=85% test=15%
+```
+
+A commit that revises yesterday's implementation after realizing the interface didn't fit:
+
+```
+fix(api): restructure session grouping logic
+
+Previous approach grouped by timestamp proximity, which
+broke across timezone boundaries. Switched to explicit
+session-group IDs from the event stream.
+
+Work: rework=60% fix=25% test=15%
+```
+
+The most important design decision is the boundary between rework and refactor. Rework means revising something recently written - the specification was undercooked, the context was insufficient, or the approach didn't survive contact with the next session's requirements. Refactor means proactive restructuring of code that already works and is stable - improving the structure for what comes next, not correcting what came before. They look identical in a diff. They mean opposite things about the health of the process.
+
+The committing agent draws that line from the diff alone - it wasn't there when the code was written, so it has no sunk-cost attachment to calling something "refactor" when it's actually rework. A human tagging commits after the fact is doing retrospective categorization from memory, with all the rationalization that implies. The agent has no memory to distort. It reads the diff, sees that yesterday's interface got restructured, checks git history for recency, and classifies accordingly. The objectivity comes not from being the entity that did the work, but from being a fresh set of eyes with no stake in the answer.
+
+---
+
+Both the old churn metrics and the new trailer metrics now run in parallel on the same dashboard in my monitoring system. The commit sync process parses the `Work:` trailer from each commit message and stores the category breakdowns alongside the file-level edit data that feeds the churn calculation.
+
+Churn gives a backward-looking behavioral signal - did the same files get re-edited within a window? Trailers give a forward-looking intentional signal - what kind of work did the agent declare this to be? They measure different things, and that's the point.
+
+When they agree - low churn paired with low reported rework - confidence is high. The output is holding and the agent is classifying it that way. When they diverge, that's where the interesting questions live. High reported rework but low churn might mean the rework happened within a single session, invisible to the file-level metric. Low reported rework but high churn might mean the agent is classifying planned iteration as feature work when the file-level signal says otherwise.
+
+The trailer data is days old at this point - too early to draw conclusions. But the parallel period is itself the point. Running both metrics against the same commit history builds a cross-validation baseline. When enough data accumulates, the places where the two signals agree and disagree will tell me something about the reliability of each.
+
+---
+
+The richer signal from the trailer goes beyond rework. Testing percentage becomes a trackable metric over time - how much testing accompanies feature work in practice, not in aspiration. The feature-to-fix ratio across a project's lifecycle tells a story about whether early architecture decisions are holding or accumulating correction debt. Docs investment, which churn couldn't see at all, becomes visible.
+
+The testing composition is the one I'm watching most closely. If the data eventually shows that projects with a consistent 15-20% testing allocation in their commits produce lower downstream rework than projects where testing is front-loaded or absent, that's a signal that can feed back into the agents' work prompts. Not a mandate - a calibration. The data would suggest what a pragmatic testing mix looks like in practice, which is a different question from what testing best practices prescribe in theory.
+
+None of this is possible from file-level churn. Churn tells me a file was touched again. The trailer tells me what was happening when it was touched, across seven dimensions, weighted by effort. The resolution is higher by an order of magnitude, and it arrives at commit time rather than requiring a lookback window.
+
+Over a project's lifecycle, the composition should shift - feature-heavy early, testing and refactor growing as the codebase matures, rework spiking mid-project when specifications are still being discovered and declining as the planning process learns what level of detail holds up.
+
+Neither chart below reflects real data yet. But they show the shapes I'm watching for. The first tracks file-level churn against trailer-reported rework over the same timeline, where divergences reveal what each signal misses. The second shows work composition across all seven categories over a project lifecycle.
+
+<ChurnVsReportedReworkChart />
+
+<WorkCompositionChart />
+
+---
+
+In my workflow, coverage is high because the commit skill is the only path I use - every commit goes through it. But nothing enforces this. A regular `git commit` bypasses the trailer entirely, and there's no validation that catches the gap. I found this out while iterating on the system itself - my orchestration plugin, which spawns agents across worktrees and commits at checkpoints, wasn't using the commit skill. Every orchestrated commit was missing the trailer. Fixing it meant updating the orchestrator to depend on the commit skill, coupling two plugins that were designed to be independent.
+
+As a solo developer I can chase down these gaps as I find them. In a team context, convention doesn't scale - the distance between "everyone should use the skill" and "everyone does" is where coverage breaks down. The cleaner solution is a commit-msg hook that reads the staged diff, runs the same classification, and appends the trailer to any commit message that doesn't already have one. Enforcement moves from process discipline to infrastructure.
+
+---
+
+The commit message was already where the analysis happened - an agent reading the diff cold, inferring intent, summarizing the work. Adding structure to that summary didn't create new information. It made existing information queryable.

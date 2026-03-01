@@ -3,96 +3,57 @@
 
 <div class="chart-container">
   <div class="chart-header">
-    <div class="chart-title">More Agents, Less Rework</div>
-    <div class="chart-subtitle">7-day trailing ratio and session-relative rework rate</div>
+    <div class="chart-title">Two Rework Signals, One Timeline</div>
+    <div class="chart-subtitle">File-level churn vs. commit-reported rework, 7-day trailing averages</div>
   </div>
-  <canvas id="ratio-vs-churn-chart"></canvas>
+  <canvas id="churn-vs-reported-chart"></canvas>
 </div>
 
 <script>
   import { Chart, registerables } from 'chart.js';
   Chart.register(...registerables);
 
+  // Illustrative data: ~8 weeks of expected patterns once trailer data accumulates
+  // Weeks 1-2: trailer coverage ramps up (not all commits have trailers yet)
+  // Weeks 3-5: both signals running, generally tracking but with divergences
+  // Weeks 6-8: higher coverage, divergences become informative
   const labels = [
-    '1/11', '1/12', '1/13', '1/14', '1/15', '1/16', '1/17', '1/18',
-    '1/19', '1/20', '1/21', '1/22', '1/23', '1/24', '1/25', '1/26',
-    '1/27', '1/28', '1/29', '1/30', '1/31', '2/1', '2/2', '2/3',
-    '2/4', '2/5', '2/6', '2/7', '2/8', '2/9', '2/10', '2/11',
-    '2/12', '2/13', '2/14', '2/15', '2/16', '2/17', '2/18', '2/19',
+    'W1', '', '', '', 'W2', '', '', '',
+    'W3', '', '', '', 'W4', '', '', '',
+    'W5', '', '', '', 'W6', '', '', '',
+    'W7', '', '', '', 'W8', '', '', '',
   ];
 
-  const wallHours = [
-    0.5, 0, 3, 4.5, 5, 5.5, 8, 13,
-    10, 3, 0, 3.5, 4, 5, 7, 6.5,
-    3, 0, 2, 5, 6.5, 5, 7, 9,
-    8, 4, 0, 0, 3, 4.5, 5.5, 4,
-    5, 7, 8, 6, 8, 7.5, 5, 3,
+  // Machine:wall ratio - continues the trajectory from previous post
+  const ratioData = [
+    1.3, 1.35, 1.4, 1.2, 1.1, 1.15, 1.5, 1.6,
+    1.45, 1.5, 1.3, 1.1, 1.2, 1.55, 1.7, 1.8,
+    1.6, 1.4, 1.15, 1.2, 1.3, 1.65, 1.75, 1.5,
+    1.35, 1.2, 1.5, 1.7, 1.6, 1.45, 1.55, 1.5,
   ];
 
-  const machineHours = [
-    0.5, 0, 3, 4.5, 5.5, 6, 11, 17,
-    13, 3.5, 0, 3.5, 4, 5.5, 8.5, 7.5,
-    3.5, 0, 2, 5.5, 7.5, 5.5, 9.5, 14,
-    11, 5, 0, 0, 3.5, 5, 6.5, 5,
-    7, 10, 11, 8, 13, 12, 8, 4,
+  // File-level churn (old metric) - backward-looking, file re-edits within 7 days
+  const churnData = [
+    14, 15, 13, 10, 8, 7, 11, 16,     // first burst: churn rises with throughput
+    14, 12, 9, 7, 8, 12, 15, 17,      // second burst: similar pattern
+    13, 10, 7, 6, 8, 11, 13, 10,      // learning: churn lower in bursts
+    9, 7, 10, 12, 11, 9, 8, 7,        // sustained: churn stabilizing
   ];
 
-  // Daily session rework: fraction of files from prior sessions re-modified in subsequent sessions
-  // Low during well-planned bursts, spikes during rushed parallel execution
-  const dailyChurnRaw = [
-    0.08, 0, 0.10, 0.12, 0.11, 0.14, 0.18, 0.22,  // first burst: churn rises with throughput
-    0.20, 0.10, 0, 0.08, 0.07, 0.09, 0.10, 0.11,   // recovery/planning: churn drops
-    0.06, 0, 0.05, 0.07, 0.08, 0.07, 0.09, 0.11,   // well-planned burst: churn stays low
-    0.10, 0.06, 0, 0, 0.05, 0.07, 0.08, 0.09,      // quiet period
-    0.12, 0.16, 0.14, 0.11, 0.10, 0.09, 0.08, 0.06, // sustained work: churn controlled
+  // Reported rework % from trailers - starts sparse, fills in
+  // Generally tracks churn but diverges where intent differs from file-level signal
+  const reportedRework: (number | null)[] = [
+    null, null, 8, null, null, 5, null, 12,       // week 1-2: sparse coverage
+    10, 11, null, 5, 6, 9, 13, 14,                // week 3-4: coverage improving
+    11, 8, 5, 4, 6, 8, 10, 7,                     // week 5-6: tracks churn loosely
+    6, 5, 7, 9, 8, 6, 5, 4,                       // week 7-8: rework trending down
   ];
-
-  // Compute 7-day trailing ratio (same logic as MachineWallRatioChart)
-  const windowSize = 7;
-  const ratios: (number | null)[] = [];
-
-  for (let i = 0; i < wallHours.length; i++) {
-    if (wallHours[i] === 0 && machineHours[i] === 0) {
-      ratios.push(null);
-      continue;
-    }
-    let wallSum = 0;
-    let machineSum = 0;
-    let count = 0;
-    for (let j = i; j >= 0 && count < windowSize; j--) {
-      if (wallHours[j] > 0 || machineHours[j] > 0) {
-        wallSum += wallHours[j];
-        machineSum += machineHours[j];
-        count++;
-      }
-    }
-    ratios.push(wallSum > 0 ? Math.round((machineSum / wallSum) * 100) / 100 : null);
-  }
-
-  // Compute 7-day trailing churn average, skipping zero-activity days
-  const churnRates: (number | null)[] = [];
-
-  for (let i = 0; i < dailyChurnRaw.length; i++) {
-    if (wallHours[i] === 0 && machineHours[i] === 0) {
-      churnRates.push(null);
-      continue;
-    }
-    let churnSum = 0;
-    let count = 0;
-    for (let j = i; j >= 0 && count < windowSize; j--) {
-      if (wallHours[j] > 0 || machineHours[j] > 0) {
-        churnSum += dailyChurnRaw[j];
-        count++;
-      }
-    }
-    churnRates.push(count > 0 ? Math.round((churnSum / count) * 1000) / 10 : null);
-  }
 
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
   const tickColor = isDark ? '#9ca3af' : '#6b7280';
 
-  const ctx = document.getElementById('ratio-vs-churn-chart') as HTMLCanvasElement;
+  const ctx = document.getElementById('churn-vs-reported-chart') as HTMLCanvasElement;
 
   new Chart(ctx, {
     type: 'line',
@@ -101,7 +62,7 @@
       datasets: [
         {
           label: 'Machine:Wall Ratio',
-          data: ratios,
+          data: ratioData,
           borderColor: '#06b6d4',
           backgroundColor: 'rgba(6, 182, 212, 0.1)',
           fill: false,
@@ -113,8 +74,8 @@
           yAxisID: 'y',
         },
         {
-          label: 'Session Rework Rate',
-          data: churnRates,
+          label: 'File Rework (churn)',
+          data: churnData,
           borderColor: '#f43f5e',
           backgroundColor: 'rgba(244, 63, 94, 0.1)',
           fill: false,
@@ -123,6 +84,20 @@
           pointHoverRadius: 3,
           borderWidth: 2,
           spanGaps: true,
+          yAxisID: 'y1',
+        },
+        {
+          label: 'Reported Rework (trailer)',
+          data: reportedRework,
+          borderColor: '#a78bfa',
+          backgroundColor: 'rgba(167, 139, 250, 0.1)',
+          fill: false,
+          tension: 0.3,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+          borderDash: [4, 2],
+          spanGaps: false,
           yAxisID: 'y1',
         },
         {
@@ -176,8 +151,7 @@
           ticks: {
             color: tickColor,
             maxRotation: 0,
-            autoSkip: true,
-            maxTicksLimit: 10,
+            autoSkip: false,
             font: { size: 11 },
           },
         },

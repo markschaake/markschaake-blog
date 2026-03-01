@@ -1,0 +1,153 @@
+---
+---
+
+<div class="chart-container">
+  <div class="chart-header">
+    <div class="chart-title">Where the Time Goes</div>
+    <div class="chart-subtitle">Weekly work composition from commit trailers, weighted by effort</div>
+  </div>
+  <canvas id="work-composition-chart"></canvas>
+</div>
+
+<script>
+  import { Chart, registerables } from 'chart.js';
+  Chart.register(...registerables);
+
+  // Illustrative data: 8 weeks of expected work composition patterns
+  // Shows a project lifecycle arc - heavy feature early, testing grows,
+  // rework appears mid-project then declines as specs improve
+  const labels = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
+
+  // Each array: weekly weighted average % for that category
+  // Percentages sum to 100 per week
+  const feature  = [70, 55, 45, 40, 35, 30, 25, 20];
+  const fix      = [ 5,  5, 10, 15, 15, 20, 20, 15];
+  const refactor = [ 0,  5,  5, 10, 10, 15, 20, 25];
+  const rework   = [ 5, 10, 15, 10,  5,  5,  5,  5];
+  const test     = [10, 15, 15, 15, 20, 20, 20, 25];
+  const docs     = [10,  5,  5,  5, 10,  5,  5,  5];
+  const ops      = [ 0,  5,  5,  5,  5,  5,  5,  5];
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const tickColor = isDark ? '#9ca3af' : '#6b7280';
+
+  const ctx = document.getElementById('work-composition-chart') as HTMLCanvasElement;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Feature',
+          data: feature,
+          backgroundColor: '#06b6d4',
+        },
+        {
+          label: 'Fix',
+          data: fix,
+          backgroundColor: '#f59e0b',
+        },
+        {
+          label: 'Refactor',
+          data: refactor,
+          backgroundColor: '#10b981',
+        },
+        {
+          label: 'Rework',
+          data: rework,
+          backgroundColor: '#f43f5e',
+        },
+        {
+          label: 'Test',
+          data: test,
+          backgroundColor: '#a78bfa',
+        },
+        {
+          label: 'Docs',
+          data: docs,
+          backgroundColor: '#64748b',
+        },
+        {
+          label: 'Ops',
+          data: ops,
+          backgroundColor: '#78716c',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2.5,
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: tickColor,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 16,
+            font: { size: 11 },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: ${context.parsed.y}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            font: { size: 11 },
+          },
+        },
+        y: {
+          stacked: true,
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            callback: (value) => `${value}%`,
+            font: { size: 11 },
+          },
+          min: 0,
+          max: 100,
+        },
+      },
+    },
+  });
+</script>
+
+<style>
+  .chart-container {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-header {
+    padding: 0 0.25rem 0.75rem;
+  }
+
+  .chart-title {
+    color: #f3f4f6;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .chart-subtitle {
+    color: #9ca3af;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+</style>
