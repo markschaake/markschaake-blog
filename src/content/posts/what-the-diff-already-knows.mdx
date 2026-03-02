@@ -27,7 +27,7 @@ The churn metric could detect rework. It couldn't tell me anything else about wh
 
 ---
 
-When the sync pipeline encounters a new commit, it fetches the diff and classifies the work across seven categories: feature, fix, refactor, rework, test, docs, ops. Percentages that sum to 100%, rounded to the nearest 5%, weighted by effort and complexity rather than line count. Only categories with non-zero values get stored.
+When the sync pipeline encounters a new commit, it fetches the diff and classifies the work across seven categories: feature, fix, refactor, rework, test, docs, ops. The taxonomy is a first pass - chosen quickly and likely to evolve as the data reveals which distinctions carry weight and which don't. Percentages sum to 100%, rounded to the nearest 5%, weighted by effort and complexity rather than line count. Only categories with non-zero values get stored.
 
 A straightforward feature commit produces a classification like this:
 
