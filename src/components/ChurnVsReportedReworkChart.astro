@@ -4,7 +4,7 @@
 <div class="chart-container">
   <div class="chart-header">
     <div class="chart-title">Two Rework Signals, One Timeline</div>
-    <div class="chart-subtitle">File-level churn vs. commit-reported rework, 7-day trailing averages</div>
+    <div class="chart-subtitle">File-level churn vs. classified rework, weekly</div>
   </div>
   <canvas id="churn-vs-reported-chart"></canvas>
 </div>
@@ -13,40 +13,32 @@
   import { Chart, registerables } from 'chart.js';
   Chart.register(...registerables);
 
-  // Illustrative data: ~8 weeks of expected patterns once trailer data accumulates
-  // Weeks 1-2: trailer coverage ramps up (not all commits have trailers yet)
-  // Weeks 3-5: both signals running, generally tracking but with divergences
-  // Weeks 6-8: higher coverage, divergences become informative
+  // Illustrative data: ~13 weeks of patterns reflecting real dashboard variance
+  // File rework spikes during refactor-heavy weeks (W1, W3, W7, W12) because
+  // churn sees re-edited files. Classified rework stays low because the classifier
+  // correctly identifies refactoring as refactoring, not rework. The divergence
+  // is the argument.
   const labels = [
-    'W1', '', '', '', 'W2', '', '', '',
-    'W3', '', '', '', 'W4', '', '', '',
-    'W5', '', '', '', 'W6', '', '', '',
-    'W7', '', '', '', 'W8', '', '', '',
+    'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7',
+    'W8', 'W9', 'W10', 'W11', 'W12', 'W13',
   ];
 
-  // Machine:wall ratio - continues the trajectory from previous post
+  // Machine:wall ratio - trending upward with noise
   const ratioData = [
-    1.3, 1.35, 1.4, 1.2, 1.1, 1.15, 1.5, 1.6,
-    1.45, 1.5, 1.3, 1.1, 1.2, 1.55, 1.7, 1.8,
-    1.6, 1.4, 1.15, 1.2, 1.3, 1.65, 1.75, 1.5,
-    1.35, 1.2, 1.5, 1.7, 1.6, 1.45, 1.55, 1.5,
+    1.1, 1.2, 1.15, 1.3, 1.35, 1.4, 1.35,
+    1.5, 1.55, 1.6, 1.55, 1.3, 1.65,
   ];
 
-  // File-level churn (old metric) - backward-looking, file re-edits within 7 days
+  // File-level churn - spikes align with refactor-heavy weeks in composition chart
   const churnData = [
-    14, 15, 13, 10, 8, 7, 11, 16,     // first burst: churn rises with throughput
-    14, 12, 9, 7, 8, 12, 15, 17,      // second burst: similar pattern
-    13, 10, 7, 6, 8, 11, 13, 10,      // learning: churn lower in bursts
-    9, 7, 10, 12, 11, 9, 8, 7,        // sustained: churn stabilizing
+    35, 12, 28, 8, 10, 14, 32,
+    8, 10, 12, 10, 55, 18,
   ];
 
-  // Reported rework % from trailers - starts sparse, fills in
-  // Generally tracks churn but diverges where intent differs from file-level signal
-  const reportedRework: (number | null)[] = [
-    null, null, 8, null, null, 5, null, 12,       // week 1-2: sparse coverage
-    10, 11, null, 5, 6, 9, 13, 14,                // week 3-4: coverage improving
-    11, 8, 5, 4, 6, 8, 10, 7,                     // week 5-6: tracks churn loosely
-    6, 5, 7, 9, 8, 6, 5, 4,                       // week 7-8: rework trending down
+  // Classified rework - tracks actual rework, not fooled by refactoring
+  const classifiedRework = [
+    12, 16, 8, 12, 8, 12, 8,
+    6, 8, 6, 8, 4, 6,
   ];
 
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -87,8 +79,8 @@
           yAxisID: 'y1',
         },
         {
-          label: 'Reported Rework (trailer)',
-          data: reportedRework,
+          label: 'Classified Rework',
+          data: classifiedRework,
           borderColor: '#a78bfa',
           backgroundColor: 'rgba(167, 139, 250, 0.1)',
           fill: false,
@@ -96,8 +88,7 @@
           pointRadius: 2,
           pointHoverRadius: 4,
           borderWidth: 2,
-          borderDash: [4, 2],
-          spanGaps: false,
+          spanGaps: true,
           yAxisID: 'y1',
         },
         {
@@ -151,7 +142,6 @@
           ticks: {
             color: tickColor,
             maxRotation: 0,
-            autoSkip: false,
             font: { size: 11 },
           },
         },
@@ -175,7 +165,7 @@
             font: { size: 11 },
           },
           min: 0,
-          suggestedMax: 25,
+          suggestedMax: 65,
         },
       },
     },

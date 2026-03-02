@@ -4,7 +4,7 @@
 <div class="chart-container">
   <div class="chart-header">
     <div class="chart-title">Where the Time Goes</div>
-    <div class="chart-subtitle">Weekly work composition from commit trailers, weighted by effort</div>
+    <div class="chart-subtitle">Weekly work composition from commit classification, weighted by effort</div>
   </div>
   <canvas id="work-composition-chart"></canvas>
 </div>
@@ -13,20 +13,23 @@
   import { Chart, registerables } from 'chart.js';
   Chart.register(...registerables);
 
-  // Illustrative data: 8 weeks of expected work composition patterns
-  // Shows a project lifecycle arc - heavy feature early, testing grows,
-  // rework appears mid-project then declines as specs improve
-  const labels = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
+  // Illustrative data: 13 weeks of cross-project work composition
+  // Refactor is bursty - large chunks some weeks, absent others
+  // Feature fills in when refactor is low; rework and test are small and sporadic
+  const labels = [
+    'W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7',
+    'W8', 'W9', 'W10', 'W11', 'W12', 'W13',
+  ];
 
   // Each array: weekly weighted average % for that category
   // Percentages sum to 100 per week
-  const feature  = [70, 55, 45, 40, 35, 30, 25, 20];
-  const fix      = [ 5,  5, 10, 15, 15, 20, 20, 15];
-  const refactor = [ 0,  5,  5, 10, 10, 15, 20, 25];
-  const rework   = [ 5, 10, 15, 10,  5,  5,  5,  5];
-  const test     = [10, 15, 15, 15, 20, 20, 20, 25];
-  const docs     = [10,  5,  5,  5, 10,  5,  5,  5];
-  const ops      = [ 0,  5,  5,  5,  5,  5,  5,  5];
+  const feature  = [35, 50, 45, 65, 60, 55, 40, 65, 70, 65, 70, 15, 55];
+  const fix      = [ 5, 10,  5,  5,  5,  5,  5, 10,  5,  5,  5, 10,  5];
+  const refactor = [35,  5, 30,  5, 10,  5, 30,  5,  5, 10,  5, 55, 20];
+  const rework   = [10, 15,  5, 10,  5, 10,  5,  5,  5,  5,  5,  0,  5];
+  const test     = [10, 10, 10,  5, 10, 10, 10,  5, 10,  5, 10,  5,  5];
+  const docs     = [ 0,  5,  0,  5,  5, 10,  5,  5,  0,  5,  0, 10,  5];
+  const ops      = [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5];
 
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';

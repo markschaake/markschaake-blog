@@ -1,0 +1,82 @@
+---
+title: "What the Diff Already Knows"
+description: "An LLM reading a git diff cold can classify the nature of the work - feature, rework, refactor - with a granularity that file-level metrics can't touch."
+pubDate: 2026-03-01
+draft: true
+tags: ["ai", "engineering", "methodology"]
+heroImage: ./what-the-diff-already-knows.webp
+---
+import ChurnVsReportedReworkChart from '../../components/ChurnVsReportedReworkChart.astro';
+import WorkCompositionChart from '../../components/WorkCompositionChart.astro';
+
+I had a number on my dashboard that tracked whether my agents' output held - files committed in one session and re-edited within a week in a later session, weighted by edit frequency. It was the most useful signal in my <a href="/posts/what-the-numbers-show">agentic workflow tracking</a>, and it was blunt enough to bother me.
+
+The commit diffs already contained everything I needed to sharpen it. I just hadn't thought to read them.
+
+---
+
+My monitoring system already syncs commits from GitHub - it pulls the metadata, ties commits to clusters of agentic coding sessions, and feeds the dashboard that tracks the churn metrics from the previous post. When a new commit arrives, the system has the diff. And the diff is the evidence. An LLM reading it cold - with no memory of the decisions that produced the code - can see what changed, infer the intent from the structure of the changes, and classify the nature of the work. The classification is a natural extension of a sync pipeline that already exists.
+
+---
+
+The churn metric I built first did one thing well - it surfaced files that kept getting re-edited across sessions within a short window. But it had specific blindnesses that became harder to ignore the more I used it.
+
+It couldn't distinguish planned iteration from failure. A feature that legitimately spans two sessions and a specification that didn't hold both look identical - same file, edited again within a week. The metric treated a documentation edit and a rework edit identically, because it only saw files, not intent. And it said nothing about the _kind_ of work being done. I could see that rework was happening. I couldn't see what else was happening alongside it - how much testing accompanied the feature work, how much was proactive restructuring versus reactive correction.
+
+The churn metric could detect rework. It couldn't tell me anything else about what was happening in the commit.
+
+---
+
+When the sync pipeline encounters a new commit, it fetches the diff and classifies the work across seven categories: feature, fix, refactor, rework, test, docs, ops. Percentages that sum to 100%, rounded to the nearest 5%, weighted by effort and complexity rather than line count. Only categories with non-zero values get stored.
+
+A straightforward feature commit produces a classification like this:
+
+```
+feat: add session duration tracking to dashboard
+→ feature=85% test=15%
+```
+
+A commit that revises yesterday's implementation after realizing the interface didn't fit:
+
+```
+fix(api): restructure session grouping logic
+→ rework=60% fix=25% test=15%
+```
+
+The most important design decision is the boundary between rework and refactor. Rework means revising something recently written - the specification was undercooked, the context was insufficient, or the approach didn't survive contact with the next session's requirements. Refactor means proactive restructuring of code that already works and is stable - improving the structure for what comes next, not correcting what came before. They look identical in a diff. They mean opposite things about the health of the process.
+
+The classifying agent draws that line from the diff alone - it wasn't there when the code was written, so it has no sunk-cost attachment to calling something "refactor" when it's actually rework. A human tagging commits after the fact is doing retrospective categorization from memory, with all the rationalization that implies. The agent has no memory to distort. It reads the diff, sees that yesterday's interface got restructured, checks git history for recency, and classifies accordingly.
+
+---
+
+Both the old churn metrics and the new classification run in parallel on the same dashboard. The commit sync process classifies each diff when it arrives and stores the category breakdowns alongside the file-level edit data that feeds the churn calculation.
+
+Churn gives a backward-looking behavioral signal - did the same files get re-edited within a window? The classification gives a forward-looking intentional signal - what kind of work does the diff represent? They measure different things, and that's the point.
+
+When they agree - low churn paired with low reported rework - confidence is high. The output is holding and the agent is classifying it that way. When they diverge, that's where the interesting questions live. High reported rework but low churn might mean the rework happened within a single session, invisible to the file-level metric. Low reported rework but high churn might mean the agent is classifying planned iteration as feature work when the file-level signal says otherwise.
+
+The classification data is a few months old now - enough to see patterns in the noise, not enough to draw firm conclusions. But the parallel period is itself the point. Running both metrics against the same commit history builds a cross-validation baseline. When enough data accumulates, the places where the two signals agree and disagree will tell me something about the reliability of each.
+
+---
+
+Running the classification in the sync pipeline rather than at commit time is a deliberate choice. An earlier version embedded the classification as a structured trailer in the commit message itself, produced by a Claude Code skill at commit time. It worked for manual commits, but my orchestration plugin - which spawns agents across worktrees and commits at checkpoints - wasn't using the commit skill. Every orchestrated commit was missing the classification. Fixing it meant coupling two plugins that were designed to be independent. The coverage problem pointed to where the classification actually belongs: in the system that cares about the metrics, not in the commit path.
+
+---
+
+The richer signal goes beyond rework. Testing percentage becomes a trackable metric over time - how much testing accompanies feature work in practice, not in aspiration. The feature-to-fix ratio across a project's lifecycle tells a story about whether early architecture decisions are holding or accumulating correction debt. Docs investment, which churn couldn't see at all, becomes visible.
+
+The testing composition is the one I'm watching most closely - whether a consistent testing allocation in commits correlates with lower downstream rework. If it does, that's a signal that can feed back into the agents' work prompts. Not a mandate - a calibration.
+
+None of this is possible from file-level churn. Churn tells me a file was touched again. The classification tells me what was happening when it was touched, across seven dimensions, weighted by effort.
+
+Over a project's lifecycle, the composition should shift - feature-heavy early, testing and refactor growing as the codebase matures, rework spiking mid-project when specifications are still being discovered and declining as the planning process learns what level of detail holds up.
+
+The first chart tracks file-level churn against classified rework over the past few months - their divergences reveal what each signal misses. The second shows work composition across all seven categories.
+
+<ChurnVsReportedReworkChart />
+
+<WorkCompositionChart />
+
+---
+
+Every commit becomes a data point about the process, not just the product. The diff already knew that - it just needed a reader with no memory.
