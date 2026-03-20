@@ -6,15 +6,12 @@ draft: false
 tags: ["ai", "engineering", "methodology"]
 heroImage: ./the-handoff.webp
 ---
-import IntentWorkCompositionChart from '../../components/IntentWorkCompositionChart.astro';
 
 AI has written 100% of my code for over six months now - that part is settled. What's been shifting is everything else - the orchestration, the oversight, the gap between expressing what I want and trusting that it gets built correctly.
 
 I've been classifying every commit across six projects by what kind of work it represents - feature, fix, refactor, rework, test, docs, ops. The weekly breakdown tells a story the aggregates can't.
 
-<IntentWorkCompositionChart />
-
-The docs category in this chart is planning and methodology artifacts - architecture documents, module decompositions, scope assessments, verification criteria. It starts as a sliver and by the final week accounts for 42% of measured effort - not because the planning expanded, but because everything around it automated away. None of it was written by hand.
+The docs category in the chart above is planning and methodology artifacts - architecture documents, module decompositions, scope assessments, verification criteria. It starts as a sliver and by the final week accounts for 42% of measured effort - not because the planning expanded, but because everything around it automated away. None of it was written by hand.
 
 ---
 
