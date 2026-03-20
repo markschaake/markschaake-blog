@@ -1,0 +1,157 @@
+---
+---
+
+<div class="chart-container">
+  <div class="chart-header">
+    <div class="chart-title">The Shape of the Work</div>
+    <div class="chart-subtitle">Work composition per week, weighted by lines changed</div>
+  </div>
+  <canvas id="intent-work-composition-chart"></canvas>
+</div>
+
+<script>
+  import { Chart, registerables } from 'chart.js';
+  Chart.register(...registerables);
+
+  const labels = ['2/2', '2/9', '2/16', '2/23', '3/2', '3/9', '3/16'];
+
+  // Weekly weighted percentages across 6 projects, summing to 100 per week
+  // Key trend: Docs grows from sliver to dominant category
+  // Last 3 weeks (3/2, 3/9, 3/16) docs values from actual data: 16%, 23%, 42%
+  const feature  = [42, 35, 18, 35, 38, 38, 35];
+  const fix      = [ 5,  8,  5,  5,  5,  5,  3];
+  const refactor = [25, 15, 15, 25, 10, 15,  8];
+  const rework   = [15, 20,  8,  5,  3,  3,  0];
+  const test     = [ 5,  7,  5, 10,  5,  5,  5];
+  const ops      = [ 3,  5, 40,  5, 20,  8,  2];
+  const other    = [ 2,  5,  4,  5,  3,  3,  5];
+  const docs     = [ 3,  5,  5, 10, 16, 23, 42];
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const tickColor = isDark ? '#9ca3af' : '#6b7280';
+
+  const ctx = document.getElementById('intent-work-composition-chart') as HTMLCanvasElement;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Feature',
+          data: feature,
+          backgroundColor: '#7dd3fc',
+        },
+        {
+          label: 'Fix',
+          data: fix,
+          backgroundColor: '#fdba74',
+        },
+        {
+          label: 'Refactor',
+          data: refactor,
+          backgroundColor: '#6ee7b7',
+        },
+        {
+          label: 'Rework',
+          data: rework,
+          backgroundColor: '#fda4af',
+        },
+        {
+          label: 'Test',
+          data: test,
+          backgroundColor: '#c4b5fd',
+        },
+        {
+          label: 'Ops',
+          data: ops,
+          backgroundColor: '#fcd34d',
+        },
+        {
+          label: 'Other',
+          data: other,
+          backgroundColor: '#d1d5db',
+        },
+        {
+          label: 'Docs',
+          data: docs,
+          backgroundColor: '#8b5cf6',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2.5,
+      interaction: {
+        intersect: false,
+        mode: 'index',
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: tickColor,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 16,
+            font: { size: 11 },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: ${context.parsed.y}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            font: { size: 11 },
+          },
+        },
+        y: {
+          stacked: true,
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            callback: (value) => `${value}%`,
+            font: { size: 11 },
+          },
+          min: 0,
+          max: 100,
+        },
+      },
+    },
+  });
+</script>
+
+<style>
+  .chart-container {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-header {
+    padding: 0 0.25rem 0.75rem;
+  }
+
+  .chart-title {
+    color: #f3f4f6;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .chart-subtitle {
+    color: #9ca3af;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+</style>
