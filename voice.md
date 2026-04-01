@@ -1,1 +1,1 @@
-/home/markschaake/projects/daily/voice.md
+/Users/markschaake/projects/daily/voice.md

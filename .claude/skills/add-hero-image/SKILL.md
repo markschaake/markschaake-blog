@@ -18,9 +18,9 @@ Convert a source image to WebP format and add it as a hero image to a blog post.
 ## Steps
 
 1. **Locate the post** at `src/content/posts/$2.md` or `src/content/posts/$2.mdx`
-2. **Convert the image** to WebP using ImageMagick:
+2. **Convert the image** to WebP using sharp (already a project dependency):
    ```
-   convert <source> -quality 80 src/content/posts/<slug>.webp
+   node -e "require('sharp')('<source>').webp({ quality: 80 }).toFile('src/content/posts/<slug>.webp').then(i => console.log('Output:', (i.size/1024).toFixed(0)+'KB'))"
    ```
 3. **Report the size reduction** (original size vs converted size)
 4. **Add the frontmatter field** `heroImage: ./<slug>.webp` to the post (add it after the `tags` line if present, otherwise before the closing `---`)
