@@ -11,6 +11,8 @@ A friend was describing what it must be like inside a frontier AI company - "a w
 
 This is the information asymmetry that everyone outside those companies lives with. We're investing in tooling, building integrations, designing architectures - and someone inside already knows which of those investments will be obsolete in a quarter. Not because they're smarter, but because they've seen what's coming.
 
+Yesterday someone <a href="https://news.ycombinator.com/item?id=47584540" target="_blank" rel="noopener noreferrer">discovered that Claude Code's entire source code</a> had shipped in an npm package - 500,000 lines, nearly 2,000 files, dozens of feature flags for capabilities that are fully built but haven't shipped. I looked at it, along with everyone else - some wanting to understand how things work under the hood, but a lot of the energy focused on the feature flags. What's coming next. What bets are about to pay off or stop making sense.
+
 I watch it playing out around me. People grabbing at opportunities, building fast, trying to find the angle that holds. Some will land on something durable. Many won't - they'll burn through savings or enthusiasm and quietly step back, and the industry will look completely different in a year. It's a discouraging dynamic to sit with, and I'm not immune to it.
 
 ## The bitter lesson
@@ -33,7 +35,7 @@ So <a href="https://eforge.build" target="_blank" rel="noopener noreferrer">efor
 
 Overprompting is the clearest example - all the careful wording that accommodates a model's current quirks but won't matter once the next version drops. Same with treating code review as a procedural checklist rather than thin scaffolding around model judgment, or building an opinionated abstraction layer where a shim would do. "Am I adding this because the model needs it, or because I'm uncomfortable letting go?"
 
-One bet I'm more confident in: staying flexible on providers. eforge supports <a href="https://github.com/badlogic/pi-mono/" target="_blank" rel="noopener noreferrer">pi</a> as a multi-provider backend specifically because locking into one vendor's API when the landscape shifts this fast seems like exactly the kind of compensatory decision that ages badly. Maybe eforge itself becomes the tool people use, maybe it's an inspiration for whatever comes next, maybe the value is just in the design principles it forces me to confront. I don't know which. But the only version of this that definitely fails is the one where I stop building.
+One bet I'm more confident in: staying flexible on providers. eforge supports <a href="https://github.com/badlogic/pi-mono/" target="_blank" rel="noopener noreferrer">pi</a> as a multi-provider backend specifically because locking into one vendor's API when the landscape shifts this fast seems like exactly the kind of compensatory decision that ages badly. Maybe eforge itself becomes the tool people use, maybe it's an inspiration for whatever comes next, maybe the value is just in the design principles it forces me to confront. I don't know which.
 
 ## What stays
 
