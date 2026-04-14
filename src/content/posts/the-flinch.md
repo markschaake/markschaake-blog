@@ -31,7 +31,7 @@ A friend I was talking with about this put it well: the gap isn't in the models 
 
 ## How I actually work now
 
-The build phase <a href="/posts/the-handoff" target="_blank" rel="noopener noreferrer">already runs in the background</a> - while eforge builds one thing, I'm planning the next, sometimes in Claude's plan mode, sometimes in <a href="https://pi.dev/" target="_blank" rel="noopener noreferrer">Pi</a> using an <a href="https://github.com/eforge-build/eforge/tree/main/pi-package" target="_blank" rel="noopener noreferrer">eforge planning extension</a> I built. The bar I hold each plan to isn't "does this sound right" but "could someone who's never seen this codebase execute this and produce something I'd ship." If five different agents could build it independently and produce roughly the same result, the plan is ready.
+The build phase <a href="/posts/the-handoff" target="_blank" rel="noopener noreferrer">already runs in the background</a> - while eforge builds one thing, I'm planning the next, sometimes in Claude's plan mode, sometimes in <a href="https://pi.dev/" target="_blank" rel="noopener noreferrer">Pi</a> using an <a href="https://github.com/eforge-build/eforge/tree/main/packages/pi-eforge" target="_blank" rel="noopener noreferrer">eforge planning extension</a> I built. The bar I hold each plan to isn't "does this sound right" but "could someone who's never seen this codebase execute this and produce something I'd ship." If five different agents could build it independently and produce roughly the same result, the plan is ready.
 
 Context-switching between plans is its own skill to develop, but the alternative is sitting idle while agents build, and that's wasted leverage.
 
