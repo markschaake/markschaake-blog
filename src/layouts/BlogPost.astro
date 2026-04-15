@@ -8,13 +8,13 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'posts'>['data'];
 
-const { title, description, pubDate, updatedDate, tags, handwritten, comments, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, handwritten, comments, heroImage, ogImage } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} image={heroImage?.src} />
+		<BaseHead title={title} description={description} image={ogImage?.src ?? heroImage?.src} />
 	</head>
 	<body>
 		<Header />

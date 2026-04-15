@@ -1,0 +1,123 @@
+---
+title: "Eval: eforge harness backends"
+description: "Two eforge backends under identical model routing. Token cost replicates across runs. Behavioral metrics don't - and a post written after one run would have been wrong."
+pubDate: 2026-04-14
+draft: false
+tags: ["ai", "engineering", "evals", "methodology"]
+heroImage: ./eval-eforge-harness-backends.webp
+ogImage: ./eval-eforge-harness-backends.webp
+---
+import HarnessTokenRatioChart from '../../components/HarnessTokenRatioChart.astro';
+import HarnessReviewerReversalChart from '../../components/HarnessReviewerReversalChart.astro';
+
+## Setup
+
+<a href="https://eforge.build" target="_blank" rel="noopener noreferrer">Eforge</a> is an open source Agentic Build System. It sizes work, decomposes plans, spawns agents, arbitrates review, and delegates execution to a configurable backend. Backend choice is open - the Claude Agent SDK, pi against any supported provider, or any other harness implementation that conforms to eforge's backend contract.
+
+For this evaluation, two variants were configured and run against the same scenarios:
+
+- **<a href="https://github.com/eforge-build/eval/blob/6dda3b2e8369ca2b15c8626fca2d58a8e6a8cdb0/variants.yaml#L6-L8" target="_blank" rel="noopener noreferrer">`claude-sdk`</a>:** backend set to the Claude Agent SDK.
+- **<a href="https://github.com/eforge-build/eval/blob/6dda3b2e8369ca2b15c8626fca2d58a8e6a8cdb0/variants.yaml#L66-L77" target="_blank" rel="noopener noreferrer">`anthropic-api`</a>:** backend set to pi with the Anthropic API as the model provider.
+
+The orchestration layer, the per-agent model assignments, and the scenarios were held constant across both variants. The backend was the only controlled difference.
+
+Runs were executed via <a href="https://github.com/eforge-build/eval" target="_blank" rel="noopener noreferrer">eforge's eval framework</a>, where each scenario is defined in <a href="https://github.com/eforge-build/eval/blob/6dda3b2e8369ca2b15c8626fca2d58a8e6a8cdb0/scenarios.yaml" target="_blank" rel="noopener noreferrer">`scenarios.yaml`</a>. Two scenarios were used:
+
+- <a href="https://github.com/eforge-build/eval/blob/6dda3b2e8369ca2b15c8626fca2d58a8e6a8cdb0/scenarios.yaml#L11-L23" target="_blank" rel="noopener noreferrer">**`todo-api-errand-health-check`**</a> (errand scale): add a `/health` endpoint to an Express API.
+- <a href="https://github.com/eforge-build/eval/blob/6dda3b2e8369ca2b15c8626fca2d58a8e6a8cdb0/scenarios.yaml#L50-L59" target="_blank" rel="noopener noreferrer">**`workspace-api-excursion-engagement`**</a> (excursion scale): build an engagement module with reactions, threads, and pins across four parallel plans.
+
+The errand scenario was run three times; the excursion scenario twice. Each run executed against both variants:
+
+```bash
+./run.sh todo-api-errand-health-check --variants claude-sdk,anthropic-api
+./run.sh workspace-api-excursion-engagement --variants claude-sdk,anthropic-api
+```
+
+- **Model routing (both variants):** `claude-opus-4-6` for every build stage, `claude-sonnet-4-6` for the PRD validator.
+- **Measurement:** per-run totals for tokens, cost, and cache hit rate, plus per-stage metrics (reviewer accept rate, stage execution, resolver invocations, gap-closer substance) derived from eforge's monitor-DB and per-run variant analyses.
+
+All five runs were executed on 2026-04-14. All five passed validation on both variants. <a href="https://github.com/eforge-build/eval/tree/206cb797f86372de16af65b75f405ada6ddcd49c/analyses/2026-04-14-harness-backends" target="_blank" rel="noopener noreferrer">Per-run variant analyses</a> are published alongside the eval framework.
+
+## Token cost replicated
+
+Claude-sdk used more tokens than pi on every run, at both scales.
+
+<HarnessTokenRatioChart />
+
+| Run | Scale     | Pi tokens | Claude-sdk tokens | Ratio | Pi cost | Claude-sdk cost |
+|-----|-----------|-----------|-------------------|-------|---------|------------------|
+| 1   | errand    | 167k      | 406k              | 2.43× | $0.41   | $0.63            |
+| 2   | errand    | 167k      | 352k              | 2.11× | $0.42   | $0.61            |
+| 3   | errand    | 159k      | 379k              | 2.38× | $0.39   | $0.62            |
+| 4   | excursion | 6.74M     | 9.32M             | 1.38× | $10.52  | $11.80           |
+| 5   | excursion | 4.92M     | 12.10M            | 2.46× | $8.42   | $14.32           |
+
+The token ratio ranges from 1.38× to 2.46×. Cost ratio from 1.10× to 1.70×. Both remain above one on every run, across both scales. Claude-sdk's cache hit rate was higher than pi's on every run (86-93% against pi's 73-90%), but raw input volume was large enough that caching efficiency did not close the gap. Output tokens showed a similar pattern: on errand runs pi produced 4-5k output tokens while claude-sdk produced 8k.
+
+## Claude-sdk silently dispatches a second model
+
+Both excursion runs showed a model-usage pattern on the claude-sdk planner that eforge did not configure. The planner, routed to `claude-opus-4-6`, also ran `claude-haiku-4-5` in the same turn.
+
+| Run | Planner opus input | Planner haiku input |
+|-----|---------------------|-----------------------|
+| 4   | 294k                | 349k                  |
+| 5   | 168k                | 507k                  |
+
+The haiku tokens appear inside the planner's `modelUsage` block, not as a separate agent in the run manifest. The mechanism isn't directly observable from the token data - the structure is consistent with sub-agent dispatch, but this evaluation didn't verify that.
+
+Pi exhibited no equivalent behavior. When eforge routed opus to the planner, pi executed on opus alone.
+
+"Same models on both sides" is technically wrong. Claude-sdk ran a second model that eforge never configured, and the orchestration layer above it had no visibility into that.
+
+## Behavioral metrics did not replicate
+
+After run 4, the behavioral picture looked decisive. Five dimensions favored pi:
+
+1. Reviewer accept rate: pi 57%, claude-sdk 28%
+2. Plan-evaluator arbitration: pi ran it, claude-sdk skipped
+3. Gap-closer substance: pi identified a defective idempotent cascade-hook registration affecting pins, reactions, and threads; claude-sdk flagged `package.json` indentation and a type assertion
+4. Merge-conflict-resolver: pi 1 invocation, claude-sdk 2 across four parallel worktrees
+5. `"review"` evaluator verdict class: emitted by claude-sdk only
+
+Each dimension is documented in the <a href="https://github.com/eforge-build/eval/blob/206cb797f86372de16af65b75f405ada6ddcd49c/analyses/2026-04-14-harness-backends/run-4-excursion-20-06-55.md" target="_blank" rel="noopener noreferrer">run-4 variant analysis</a>.
+
+Run 5 did not replicate any of them.
+
+<HarnessReviewerReversalChart />
+
+- **Reviewer accept rate:** pi dropped to 33%, claude-sdk rose to 62%. Complete reversal.
+- **Plan-evaluator:** this run, claude-sdk executed plan-evaluator and pi skipped it. Reversal.
+- **Gap-closer:** neither variant identified a substantive bug on run 5.
+- **Merge-conflict-resolver:** not invoked on either variant. The run-4 invocation counts had no analogue.
+- **`"review"` verdict class:** emitted on both variants (pi 8 of 27 verdicts, claude-sdk 2 of 26). The exclusivity observed on run 4 did not hold.
+
+Composer scope-sizing across the three errand runs showed a related instability. Pi's composer sized the errand correctly as `errand` on run 2 and as `excursion` on runs 1 and 3. Claude-sdk's composer sized all three as `excursion`. The pattern of pi being sometimes correct and claude-sdk being consistently over-scoped held across three errand runs, but a single additional sample in either direction could change the characterization.
+
+## Interpretation
+
+Two findings replicated across five runs:
+
+1. Pi consumes fewer tokens than claude-sdk on the same scenario under identical model routing (1.38-2.46×).
+2. The claude-sdk backend dispatches `claude-haiku-4-5` as a planner sub-agent; pi does not. Observed on both excursion runs.
+
+Behavioral metrics on a single excursion-scale scenario did not replicate across two samples. The direction of every observed difference reversed or washed out when the scenario was re-run. The <a href="https://github.com/eforge-build/eval/blob/206cb797f86372de16af65b75f405ada6ddcd49c/analyses/2026-04-14-harness-backends/run-5-excursion-21-27-12.md" target="_blank" rel="noopener noreferrer">run-5 variant analysis</a> notes this directly: any single-run comparison at this scale should be read as one sample, not a backend verdict.
+
+A harness-comparison post published on the basis of run 4 alone would have reported five behavioral advantages for pi that were not reproducible. A reversed post based on run 5 alone would have reported the same pattern in the other direction.
+
+## Also replicated across all five runs
+
+No MCP tool calls or skill invocations were recorded on either variant. The observed token gap cannot be attributed to capability that claude-sdk exposed and pi did not.
+
+## One-run observations worth flagging
+
+On run 5, claude-sdk's plan-reviewer consumed $1.24 on 1.14M input tokens. Pi's plan-reviewer on the same PRD consumed $0.29 on 94k input tokens. The 4× spend differential was not present at that magnitude on run 4. One excursion run isn't enough to separate signal from the run-to-run variance the behavioral metrics already showed.
+
+## Limitations
+
+- Dollar figures reflect API pricing on both variants. The claude-sdk backend draws on a Claude subscription when one is present, so for subscription users claude-sdk's real-world cost is capped by the subscription rather than billed per token. The token ratio holds; the cost ratio does not necessarily survive.
+- Two scenarios, one per scale. Neither is representative of engineering workloads in general.
+- n=3 at errand scale, n=2 at excursion scale. Behavioral claims require larger samples.
+- All runs executed on a single day. Shared API-side conditions cannot be ruled out as a factor in any observed metric.
+- The `"review"` verdict class is not currently counted in `result.review.accepted` or `result.review.rejected`. Metrics that depend on those totals may understate review activity on runs where `"review"` verdicts are emitted.
+
+Token and cost differentials between the two harness configurations are stable at this sample size. Behavioral differentials are not. Claims about which harness produces higher-quality decisions under identical model routing require more runs than this evaluation contains.

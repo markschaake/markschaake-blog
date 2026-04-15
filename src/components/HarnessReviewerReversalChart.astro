@@ -1,0 +1,116 @@
+---
+---
+
+<div class="chart-container">
+  <div class="chart-header">
+    <div class="chart-title">Reviewer accept rate, excursion runs</div>
+    <div class="chart-subtitle">Share of reviewer-raised issues the evaluator accepted as real</div>
+  </div>
+  <canvas id="harness-reviewer-reversal-chart"></canvas>
+</div>
+
+<script>
+  import { Chart, registerables } from 'chart.js';
+  Chart.register(...registerables);
+
+  const labels = ['Run 4', 'Run 5'];
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const tickColor = isDark ? '#9ca3af' : '#6b7280';
+
+  const ctx = document.getElementById('harness-reviewer-reversal-chart') as HTMLCanvasElement;
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'pi',
+          data: [57, 33],
+          borderColor: '#3b82f6',
+          backgroundColor: '#3b82f6',
+          tension: 0,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 3,
+        },
+        {
+          label: 'claude-sdk',
+          data: [28, 62],
+          borderColor: '#f59e0b',
+          backgroundColor: '#f59e0b',
+          tension: 0,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          borderWidth: 3,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2.2,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: tickColor,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 20,
+            font: { size: 12 },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: ${context.parsed.y}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: tickColor, font: { size: 12 } },
+        },
+        y: {
+          grid: { color: gridColor },
+          ticks: {
+            color: tickColor,
+            callback: (value) => `${value}%`,
+            font: { size: 11 },
+          },
+          beginAtZero: true,
+          suggestedMax: 80,
+        },
+      },
+    },
+  });
+</script>
+
+<style>
+  .chart-container {
+    background-color: #1f2937;
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.25rem 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-header {
+    padding: 0 0.25rem 0.75rem;
+  }
+
+  .chart-title {
+    color: #f3f4f6;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .chart-subtitle {
+    color: #9ca3af;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+</style>

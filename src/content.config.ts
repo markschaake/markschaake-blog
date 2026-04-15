@@ -14,6 +14,7 @@ const posts = defineCollection({
 			tags: z.array(z.string()).default([]),
 			comments: z.boolean().default(true),
 			heroImage: image().optional(),
+			ogImage: image().optional(),
 		}),
 });
 
