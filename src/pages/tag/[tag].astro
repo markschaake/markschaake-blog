@@ -1,0 +1,208 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const posts = (await getCollection('posts'))
+		.filter(post => import.meta.env.DEV || !post.data.draft);
+
+	const tagMap = new Map<string, typeof posts>();
+	for (const post of posts) {
+		for (const tag of post.data.tags ?? []) {
+			const existing = tagMap.get(tag) ?? [];
+			existing.push(post);
+			tagMap.set(tag, existing);
+		}
+	}
+
+	return Array.from(tagMap.entries()).map(([tag, taggedPosts]) => ({
+		params: { tag },
+		props: {
+			tag,
+			posts: taggedPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+		},
+	}));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`#${tag} | ${SITE_TITLE}`}
+			description={`Posts tagged ${tag}`}
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<p class="eyebrow">Tag</p>
+			<h1>#{tag}</h1>
+			<p class="count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+			<ul class="posts">
+				{posts.map((post) => (
+					<li>
+						<a href={`/posts/${post.id}/`}>
+							<span class="title">
+								{post.data.title}
+								{post.data.handwritten
+									? <span class="badge handwritten">handwritten</span>
+									: <span class="badge ai-assisted">AI-assisted</span>
+								}
+								{post.data.draft && <span class="badge draft">draft</span>}
+							</span>
+							<span class="description">{post.data.description}</span>
+							<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.eyebrow {
+		color: var(--color-gray-500);
+		font-size: 0.875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 0.5rem;
+	}
+
+	h1 {
+		margin: 0 0 0.5rem;
+	}
+
+	.count {
+		color: var(--color-gray-500);
+		font-size: 0.9rem;
+		margin-bottom: 2rem;
+	}
+
+	.posts {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.posts li {
+		border-bottom: 1px solid var(--color-gray-200);
+	}
+
+	.posts li:last-child {
+		border-bottom: none;
+	}
+
+	.posts a {
+		display: block;
+		padding: 1.5rem 0;
+		text-decoration: none;
+	}
+
+	.posts a:hover {
+		text-decoration: none;
+	}
+
+	.posts a:hover .title {
+		color: var(--color-accent);
+	}
+
+	.title {
+		display: block;
+		color: var(--color-gray-900);
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
+	}
+
+	.badge {
+		display: inline-block;
+		padding: 0.125rem 0.5rem;
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		margin-left: 0.5rem;
+		vertical-align: middle;
+	}
+
+	.handwritten {
+		background-color: #dbeafe;
+		color: #1e40af;
+	}
+
+	.ai-assisted {
+		background-color: var(--color-gray-100);
+		color: var(--color-gray-500);
+	}
+
+	.draft {
+		background-color: #fef3c7;
+		color: #92400e;
+	}
+
+	.description {
+		display: block;
+		color: var(--color-gray-600);
+		margin-bottom: 0.5rem;
+		line-height: 1.5;
+	}
+
+	.date {
+		display: block;
+		color: var(--color-gray-500);
+		font-size: 0.875rem;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.posts li {
+			border-bottom-color: var(--color-gray-700);
+		}
+
+		.title {
+			color: var(--color-gray-100);
+		}
+
+		.posts a:hover .title {
+			color: #60a5fa;
+		}
+
+		.posts a:visited .title {
+			color: var(--color-gray-400);
+		}
+
+		.posts a:visited:hover .title {
+			color: #60a5fa;
+		}
+
+		.handwritten {
+			background-color: #1e3a5f;
+			color: #93c5fd;
+		}
+
+		.ai-assisted {
+			background-color: var(--color-gray-700);
+			color: var(--color-gray-400);
+		}
+
+		.draft {
+			background-color: #78350f;
+			color: #fde68a;
+		}
+
+		.description {
+			color: var(--color-gray-400);
+		}
+
+		.posts a:visited .description {
+			color: var(--color-gray-500);
+		}
+	}
+</style>

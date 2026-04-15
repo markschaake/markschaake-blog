@@ -3,7 +3,7 @@ title: "The Handoff"
 description: "Abstracting away the build phase: learning to plan full time."
 pubDate: 2026-03-20
 draft: false
-tags: ["ai", "engineering", "methodology"]
+tags: ["ai", "engineering", "methodology", "thinking-layer"]
 heroImage: ./the-handoff.webp
 ---
 

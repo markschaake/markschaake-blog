@@ -3,7 +3,7 @@ title: "Expedition, Excursion, Errand"
 description: "A methodology for solo developers using AI agents - when to plan deeply, when to parallelize, when to iterate."
 pubDate: 2026-02-03
 draft: false
-tags: ["ai", "consulting", "methodology", "claude-code"]
+tags: ["ai", "consulting", "methodology", "claude-code", "thinking-layer"]
 ---
 
 Clients want senior-level judgment and junior-level throughput. The traditional answer is to hire people, take on overhead, dilute margins. The agentic answer is different - multiply execution capacity while retaining judgment authority.

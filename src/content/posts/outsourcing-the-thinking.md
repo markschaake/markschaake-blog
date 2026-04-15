@@ -3,7 +3,7 @@ title: "Outsourcing the Thinking"
 description: "What happens when AI-generated artifacts substitute for human judgment - and the falls are too slow to feel until they've already happened."
 pubDate: 2026-02-08
 draft: false
-tags: ["ai", "consulting", "lessons"]
+tags: ["ai", "consulting", "lessons", "thinking-layer"]
 ---
 
 A client sent me a PRD to build against. The people behind it were technical, experienced - exactly the kind of people I trust to know what they need. The document itself was thorough in the way that makes implementation feel clean: well-sectioned, specific about acceptance criteria, detailed enough that I could start building without much back-and-forth. So I started building.

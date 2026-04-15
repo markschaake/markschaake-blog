@@ -3,7 +3,7 @@ title: "Finding the Edge of AI Trust"
 description: "What happens when you over-trust your AI agents and misdirect a client's leadership team."
 pubDate: 2026-02-08
 draft: false
-tags: ["ai", "claude-code", "lessons"]
+tags: ["ai", "claude-code", "lessons", "thinking-layer"]
 ---
 
 I'm not interested in 10x productivity from AI. I'm chasing something bigger.

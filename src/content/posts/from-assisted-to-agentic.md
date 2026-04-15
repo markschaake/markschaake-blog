@@ -3,7 +3,7 @@ title: "From Assisted to Agentic"
 description: "AI tool adoption is nearly universal among engineering teams, but the workflows underneath haven't moved."
 pubDate: 2026-02-18
 draft: false
-tags: ["ai", "engineering", "methodology"]
+tags: ["ai", "engineering", "methodology", "thinking-layer"]
 ---
 
 I did a fractional CTO engagement last year where I spent weeks building with agentic engineering workflows - specs before prompting, validation as real-time feedback, AI as a system component rather than a typing assistant. When it came time to hand the work off, the gap between how I'd been building and how the team was working was enormous. Not a gap in talent or effort - a gap in methodology. I spent time teaching, trying to transfer not just the tools but the framework around them. Whether it stuck, I don't know.

@@ -37,7 +37,7 @@ const { title, description, pubDate, updatedDate, tags, handwritten, comments, h
 					{tags && tags.length > 0 && (
 						<div class="tags">
 							{tags.map((tag) => (
-								<span class="tag">{tag}</span>
+								<a href={`/tag/${tag}/`} class="tag">#{tag}</a>
 							))}
 						</div>
 					)}
@@ -100,6 +100,15 @@ const { title, description, pubDate, updatedDate, tags, handwritten, comments, h
 		border-radius: 9999px;
 		font-size: 0.8125rem;
 		font-weight: 500;
+		text-decoration: none;
+		transition: background-color 0.15s ease, color 0.15s ease;
+	}
+
+	.tag:hover,
+	.tag:focus-visible {
+		background-color: var(--color-gray-200);
+		color: var(--color-accent);
+		text-decoration: none;
 	}
 
 	.badge {
@@ -140,6 +149,17 @@ const { title, description, pubDate, updatedDate, tags, handwritten, comments, h
 		.ai-assisted {
 			background-color: var(--color-gray-700);
 			color: var(--color-gray-400);
+		}
+
+		.tag {
+			background-color: var(--color-gray-700);
+			color: var(--color-gray-300);
+		}
+
+		.tag:hover,
+		.tag:focus-visible {
+			background-color: var(--color-gray-600);
+			color: #60a5fa;
 		}
 	}
 </style>
