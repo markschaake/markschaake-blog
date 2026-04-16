@@ -3,7 +3,7 @@ const today = new Date();
 ---
 
 <footer>
-	<p>&copy; {today.getFullYear()} Mark Schaake</p>
+	<p>&copy; {today.getFullYear()} Mark Schaake · <a href="/rss.xml">Subscribe via RSS</a></p>
 </footer>
 
 <style>
@@ -18,5 +18,27 @@ const today = new Date();
 
 	footer p {
 		margin: 0;
+	}
+
+	footer a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-color: var(--color-gray-300);
+		text-underline-offset: 0.2em;
+		transition: color 0.15s ease;
+	}
+
+	footer a:hover {
+		color: var(--color-gray-900);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		footer a {
+			text-decoration-color: var(--color-gray-700);
+		}
+
+		footer a:hover {
+			color: var(--color-gray-50);
+		}
 	}
 </style>
