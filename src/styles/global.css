@@ -1,11 +1,16 @@
+@import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   --color-accent: #2563eb;
   --color-accent-dark: #1d4ed8;
+  --color-terminal: #22c55e;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
@@ -28,8 +33,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  font-size: 1.125rem;
-  line-height: 1.75;
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 main {
@@ -39,17 +44,60 @@ main {
   padding: 2rem 1.5rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-gray-900);
-  font-weight: 700;
-  line-height: 1.25;
-  margin: 0 0 0.5rem 0;
+/* Widescreen: two-track grid with a meta rail left of the prose column. */
+main.page-grid {
+  max-width: 72rem;
+  display: grid;
+  column-gap: 3rem;
+  grid-template-columns: minmax(0, 1fr);
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
+main.page-grid > * {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  main.page-grid {
+    grid-template-columns: 14rem minmax(0, 42rem) 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 0;
+  }
+
+  main.page-grid > .page-meta {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+    padding-right: 2rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+  }
+
+  main.page-grid > .page-title,
+  main.page-grid > .page-body {
+    grid-column: 2;
+    border-left: 1px solid var(--color-gray-200);
+    padding-left: 2.5rem;
+  }
+
+  main.page-grid > .page-title { grid-row: 1; }
+  main.page-grid > .page-body  { grid-row: 2; }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-gray-900);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.375rem; }
+h4 { font-size: 1.125rem; }
 
 a {
   color: var(--color-accent);
@@ -193,9 +241,9 @@ p {
     font-size: 1rem;
   }
 
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.25rem; }
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.375rem; }
+  h3 { font-size: 1.1875rem; }
 
   main {
     padding: 1.5rem 1rem;
@@ -246,5 +294,12 @@ p {
 
   .prose td {
     @apply border-gray-700;
+  }
+
+  @media (min-width: 1024px) {
+    main.page-grid > .page-title,
+    main.page-grid > .page-body {
+      border-left-color: var(--color-gray-700);
+    }
   }
 }

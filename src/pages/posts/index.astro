@@ -9,6 +9,14 @@ import { SITE_TITLE } from '../../consts';
 const posts = (await getCollection('posts'))
 	.filter(post => import.meta.env.DEV || !post.data.draft)
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+	for (const tag of post.data.tags ?? []) {
+		tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+	}
+}
+const tags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 ---
 
 <!doctype html>
@@ -18,38 +26,152 @@ const posts = (await getCollection('posts'))
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>Posts</h1>
-			{posts.length === 0 ? (
-				<p class="empty">No posts yet. Check back soon!</p>
-			) : (
-				<ul class="posts">
-					{posts.map((post) => (
-						<li>
-							<a href={`/posts/${post.id}/`}>
-								<span class="title">
-									{post.data.title}
-									{post.data.handwritten
-										? <span class="badge handwritten">handwritten</span>
-										: <span class="badge ai-assisted">AI-assisted</span>
-									}
-									{post.data.draft && <span class="badge draft">draft</span>}
-								</span>
-								<span class="description">{post.data.description}</span>
-								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
-							</a>
-						</li>
-					))}
-				</ul>
-			)}
+		<main class="page-grid">
+			<header class="page-title">
+				<h1>Posts</h1>
+			</header>
+			<aside class="page-meta">
+				<div class="meta-label">Tags</div>
+				{tags.length > 0 && (
+					<ul class="tag-list">
+						{tags.map(([tag, count]) => (
+							<li>
+								<a href={`/tag/${tag}/`} class="tag">
+									<span class="tag-name">#{tag}</span>
+									<span class="tag-count">{count}</span>
+								</a>
+							</li>
+						))}
+					</ul>
+				)}
+			</aside>
+			<div class="page-body">
+				{posts.length === 0 ? (
+					<p class="empty">No posts yet. Check back soon!</p>
+				) : (
+					<ul class="posts">
+						{posts.map((post) => (
+							<li>
+								<a href={`/posts/${post.id}/`}>
+									<span class="title">
+										{post.data.title}
+										{post.data.handwritten
+											? <span class="badge handwritten">handwritten</span>
+											: <span class="badge ai-assisted">AI-assisted</span>
+										}
+										{post.data.draft && <span class="badge draft">draft</span>}
+									</span>
+									<span class="description">{post.data.description}</span>
+									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+								</a>
+							</li>
+						))}
+					</ul>
+				)}
+			</div>
 		</main>
 		<Footer />
 	</body>
 </html>
 
 <style>
-	h1 {
+	.page-title h1 {
+		margin-bottom: 0;
+	}
+
+	.page-title {
 		margin-bottom: 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid var(--color-gray-200);
+	}
+
+	.page-meta {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		margin-bottom: 2rem;
+	}
+
+	.meta-label {
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-gray-500);
+	}
+
+	.tag-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.tag {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.5ch;
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--color-gray-600);
+		text-decoration: none;
+		padding: 0.125rem 0.5rem;
+		border: 1px solid var(--color-gray-300);
+		border-radius: 0.25rem;
+		transition: color 0.15s ease, border-color 0.15s ease;
+	}
+
+	.tag:hover,
+	.tag:focus-visible {
+		color: var(--color-accent);
+		border-color: var(--color-accent);
+		text-decoration: none;
+	}
+
+	.tag-count {
+		color: var(--color-gray-400);
+		font-size: 0.75rem;
+	}
+
+	.tag:hover .tag-count,
+	.tag:focus-visible .tag-count {
+		color: var(--color-accent);
+	}
+
+	@media (min-width: 1024px) {
+		.page-meta {
+			gap: 0.25rem;
+			margin-bottom: 0;
+		}
+
+		.tag-list {
+			flex-direction: column;
+			gap: 0.125rem;
+		}
+
+		.tag-list li {
+			width: 100%;
+		}
+
+		.tag {
+			border: none;
+			padding: 0.125rem 0;
+			justify-content: space-between;
+			color: var(--color-gray-600);
+			width: 100%;
+		}
+
+		.tag:hover,
+		.tag:focus-visible {
+			color: var(--color-accent);
+			border: none;
+		}
+
+		.meta-label {
+			margin-bottom: 0.5rem;
+		}
 	}
 
 	.empty {
@@ -76,6 +198,10 @@ const posts = (await getCollection('posts'))
 		text-decoration: none;
 	}
 
+	.posts li:first-child a {
+		padding-top: 0;
+	}
+
 	.posts a:hover {
 		text-decoration: none;
 	}
@@ -95,25 +221,26 @@ const posts = (await getCollection('posts'))
 	.badge {
 		display: inline-block;
 		padding: 0.125rem 0.5rem;
-		border-radius: 9999px;
-		font-size: 0.75rem;
+		border-radius: 0.25rem;
+		border: 1px solid currentColor;
+		background: transparent;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
 		font-weight: 500;
+		letter-spacing: 0.02em;
 		margin-left: 0.5rem;
 		vertical-align: middle;
 	}
 
 	.handwritten {
-		background-color: #dbeafe;
-		color: #1e40af;
+		color: #1d4ed8;
 	}
 
 	.ai-assisted {
-		background-color: var(--color-gray-100);
 		color: var(--color-gray-500);
 	}
 
 	.draft {
-		background-color: #fef3c7;
 		color: #92400e;
 	}
 
@@ -128,9 +255,47 @@ const posts = (await getCollection('posts'))
 		display: block;
 		color: var(--color-gray-500);
 		font-size: 0.875rem;
+		font-family: var(--font-mono);
 	}
 
 	@media (prefers-color-scheme: dark) {
+		.page-title {
+			border-bottom-color: var(--color-gray-700);
+		}
+
+		.tag {
+			color: var(--color-gray-400);
+			border-color: var(--color-gray-700);
+		}
+
+		.tag:hover,
+		.tag:focus-visible {
+			color: #60a5fa;
+			border-color: #60a5fa;
+		}
+
+		.tag-count {
+			color: var(--color-gray-500);
+		}
+
+		.tag:hover .tag-count,
+		.tag:focus-visible .tag-count {
+			color: #60a5fa;
+		}
+
+		@media (min-width: 1024px) {
+			.tag {
+				color: var(--color-gray-400);
+				border: none;
+			}
+
+			.tag:hover,
+			.tag:focus-visible {
+				color: #60a5fa;
+				border: none;
+			}
+		}
+
 		.posts li {
 			border-bottom-color: var(--color-gray-700);
 		}
@@ -152,17 +317,14 @@ const posts = (await getCollection('posts'))
 		}
 
 		.handwritten {
-			background-color: #1e3a5f;
 			color: #93c5fd;
 		}
 
 		.ai-assisted {
-			background-color: var(--color-gray-700);
 			color: var(--color-gray-400);
 		}
 
 		.draft {
-			background-color: #78350f;
 			color: #fde68a;
 		}
 

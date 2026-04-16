@@ -5,7 +5,9 @@ import HeaderLink from './HeaderLink.astro';
 
 <header>
 	<nav>
-		<a href="/" class="site-title">{SITE_TITLE}</a>
+		<a href="/" class="site-title" aria-label={SITE_TITLE}>
+			<span class="prompt" aria-hidden="true">~</span><span class="wordmark">mark-schaake</span><span class="cursor" aria-hidden="true"></span>
+		</a>
 		<div class="nav-links">
 			<HeaderLink href="/posts">Posts</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
@@ -35,34 +37,82 @@ import HeaderLink from './HeaderLink.astro';
 
 <style>
 	header {
-		background: white;
+		background: color-mix(in srgb, var(--color-gray-50) 90%, transparent);
+		backdrop-filter: saturate(180%) blur(10px);
+		-webkit-backdrop-filter: saturate(180%) blur(10px);
 		border-bottom: 1px solid var(--color-gray-200);
+		position: sticky;
+		top: 0;
+		z-index: 50;
 	}
 
 	nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		max-width: 42rem;
+		max-width: 72rem;
 		margin: 0 auto;
 		padding: 1rem 1.5rem;
+		gap: 2rem;
 	}
 
 	.site-title {
-		font-size: 1.25rem;
-		font-weight: 700;
+		font-family: var(--font-mono);
+		font-size: 1.0625rem;
+		font-weight: 500;
+		color: var(--color-gray-900);
+		text-decoration: none;
+		letter-spacing: -0.01em;
+		display: inline-flex;
+		align-items: baseline;
+		white-space: nowrap;
+	}
+
+	.site-title:hover {
 		color: var(--color-gray-900);
 		text-decoration: none;
 	}
 
-	.site-title:hover {
+	.site-title:hover .wordmark {
 		color: var(--color-accent);
-		text-decoration: none;
+	}
+
+	.prompt {
+		color: var(--color-terminal);
+		margin-right: 0.5ch;
+		font-weight: 600;
+	}
+
+	.wordmark {
+		transition: color 0.15s ease;
+	}
+
+	.cursor {
+		display: inline-block;
+		width: 0.55ch;
+		height: 1.05em;
+		background-color: var(--color-terminal);
+		margin-left: 0.3ch;
+		transform: translateY(0.15em);
+		animation: cursor-blink 1.06s steps(1) infinite;
+	}
+
+	@keyframes cursor-blink {
+		0%, 50% { opacity: 1; }
+		50.01%, 100% { opacity: 0; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cursor {
+			animation: none;
+			opacity: 1;
+		}
 	}
 
 	.nav-links {
 		display: flex;
 		gap: 1.5rem;
+		margin-left: auto;
 	}
 
 	.social-links {
@@ -73,6 +123,8 @@ import HeaderLink from './HeaderLink.astro';
 	.social-links a {
 		color: var(--color-gray-500);
 		transition: color 0.15s ease;
+		display: inline-flex;
+		align-items: center;
 	}
 
 	.social-links a:hover {
@@ -82,6 +134,7 @@ import HeaderLink from './HeaderLink.astro';
 	@media (max-width: 640px) {
 		nav {
 			padding: 0.75rem 1rem;
+			gap: 1rem;
 		}
 
 		.nav-links {
@@ -91,16 +144,28 @@ import HeaderLink from './HeaderLink.astro';
 		.social-links {
 			display: none;
 		}
+
+		.site-title {
+			font-size: 1rem;
+		}
 	}
 
 	@media (prefers-color-scheme: dark) {
 		header {
-			background: var(--color-gray-900);
+			background: color-mix(in srgb, var(--color-gray-900) 85%, transparent);
 			border-bottom-color: var(--color-gray-700);
 		}
 
 		.site-title {
 			color: var(--color-gray-50);
+		}
+
+		.site-title:hover {
+			color: var(--color-gray-50);
+		}
+
+		.site-title:hover .wordmark {
+			color: #60a5fa;
 		}
 
 		.social-links a {
