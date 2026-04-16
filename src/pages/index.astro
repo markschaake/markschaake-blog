@@ -72,18 +72,23 @@ const posts = (await getCollection('posts'))
 
 	.intro p {
 		color: var(--color-gray-600);
-		font-size: 1.25rem;
+		font-size: 1.1875rem;
 		line-height: 1.6;
-		margin: 0;
+		margin: 0 0 1rem 0;
+	}
+
+	.intro p:last-child {
+		margin-bottom: 0;
 	}
 
 	.posts h2 {
-		font-size: 1.25rem;
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
 		margin-bottom: 1rem;
 		color: var(--color-gray-500);
-		font-weight: 600;
+		font-weight: 500;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.08em;
 	}
 
 	.posts ul {
@@ -126,26 +131,29 @@ const posts = (await getCollection('posts'))
 	.badge {
 		display: inline-block;
 		padding: 0.125rem 0.5rem;
-		border-radius: 9999px;
-		font-size: 0.75rem;
+		border-radius: 0.25rem;
+		border: 1px solid currentColor;
+		background: transparent;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
 		font-weight: 500;
+		letter-spacing: 0.02em;
 		margin-left: 0.5rem;
 		vertical-align: middle;
 	}
 
 	.handwritten {
-		background-color: #dbeafe;
-		color: #1e40af;
+		color: #1d4ed8;
 	}
 
 	.ai-assisted {
-		background-color: var(--color-gray-100);
 		color: var(--color-gray-500);
 	}
 
 	.date {
 		color: var(--color-gray-500);
-		font-size: 0.875rem;
+		font-size: 0.8125rem;
+		font-family: var(--font-mono);
 		flex-shrink: 0;
 	}
 
@@ -184,12 +192,10 @@ const posts = (await getCollection('posts'))
 		}
 
 		.handwritten {
-			background-color: #1e3a5f;
 			color: #93c5fd;
 		}
 
 		.ai-assisted {
-			background-color: var(--color-gray-700);
 			color: var(--color-gray-400);
 		}
 	}
