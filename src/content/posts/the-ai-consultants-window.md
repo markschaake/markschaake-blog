@@ -3,6 +3,7 @@ title: "The AI Consultant's Window"
 description: "There's an opportunity for consultants who can wield AI coding tools. The question is how long it stays open."
 pubDate: 2026-01-30
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "consulting", "software"]
 ---
 

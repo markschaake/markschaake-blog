@@ -3,6 +3,7 @@ title: "Expedition, Excursion, Errand"
 description: "A methodology for solo developers using AI agents - when to plan deeply, when to parallelize, when to iterate."
 pubDate: 2026-02-03
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "consulting", "methodology", "claude-code", "thinking-layer"]
 ---
 

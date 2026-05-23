@@ -3,6 +3,7 @@ title: "The Open Source Alternative"
 description: "Factory AI ships Missions. I'd already built the open source version - from a different direction, with a different answer to what quality means."
 pubDate: 2026-04-05
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "engineering", "eforge"]
 heroImage: ./the-open-source-alternative.webp
 ---

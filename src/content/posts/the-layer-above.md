@@ -3,6 +3,7 @@ title: "The Layer Above"
 description: "The Codex-vs-Claude-Code debate is comparing the wrong layer."
 pubDate: 2026-02-18
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "claude-code", "methodology", "thinking-layer"]
 heroImage: ./the-layer-above.webp
 ---

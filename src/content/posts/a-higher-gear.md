@@ -3,6 +3,7 @@ title: "A Higher Gear"
 description: "AI agents promise to clear the noise from daily life. The temptation is to fill the space with more ambition, not more presence."
 pubDate: 2026-02-15
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "life", "agents"]
 ---
 

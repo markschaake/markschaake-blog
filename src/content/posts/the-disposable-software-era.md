@@ -3,6 +3,7 @@ title: "The Disposable Software Era"
 description: "When building software becomes cheaper than buying it, the economics of SaaS start to look different."
 pubDate: 2026-01-30
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "software", "saas"]
 ---
 

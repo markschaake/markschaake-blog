@@ -3,6 +3,7 @@ title: "Building for Communities You Belong To"
 description: "What happens when you use your skills to build software for a community you're already part of."
 pubDate: 2026-01-31
 draft: false
+llms: ["opus-4.6"]
 tags: ["building", "community", "ai", "claude-code"]
 ---
 

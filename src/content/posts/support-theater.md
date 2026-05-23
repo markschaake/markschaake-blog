@@ -3,6 +3,7 @@ title: "Support Theater"
 description: "Six agents, one thread, zero investigation - what happens when customer support optimizes for the performance of help instead of help itself."
 pubDate: 2026-02-21
 draft: false
+llms: ["opus-4.6"]
 tags: ["meta", "support", "consumer-tech"]
 ---
 

@@ -3,6 +3,7 @@ title: "The Flinch"
 description: "Everyone flinches at the moment they're supposed to let go of the code. The skill that matters now is planning well enough to trust the handoff."
 pubDate: 2026-04-04
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "engineering", "eforge"]
 heroImage: ./the-flinch.webp
 ---

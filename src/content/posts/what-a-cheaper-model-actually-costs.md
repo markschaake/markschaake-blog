@@ -3,6 +3,7 @@ title: "What a Cheaper Model Actually Costs"
 description: "The policy that governs my primary dev workflow lives in an X reply. That's its own kind of vendor risk."
 pubDate: 2026-04-04
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "engineering", "eforge"]
 heroImage: ./what-a-cheaper-model-actually-costs.webp
 ---

@@ -3,6 +3,7 @@ title: "The Hill"
 description: "Information asymmetry, the bitter lesson, and what stays durable when models keep getting smarter."
 pubDate: 2026-04-01
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "engineering", "career"]
 heroImage: ./the-hill.webp
 ---

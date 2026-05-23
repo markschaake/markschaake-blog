@@ -3,6 +3,7 @@ title: "Outsourcing the Thinking"
 description: "What happens when AI-generated artifacts substitute for human judgment - and the falls are too slow to feel until they've already happened."
 pubDate: 2026-02-08
 draft: false
+llms: ["opus-4.6"]
 tags: ["ai", "consulting", "lessons", "thinking-layer"]
 ---
 
