@@ -54,3 +54,11 @@ Constants like site title, description, and author are in `src/consts.ts`. The s
 ## Writing Style
 
 When writing or editing blog content, **read `voice.md` first** — it contains all voice, tone, punctuation, and style guidelines. That file is the single source of truth for Mark's writing voice (shared across blog, LinkedIn, and other platforms).
+
+## Background Material for Brainstorming
+
+For brainstorming new posts or understanding Mark's current thinking, consult `~/project/daily/`. This daily journal contains raw notes, recurring themes, personal context, and other material that can help agents get a feel for Mark and the state of his mind before proposing topics or angles.
+
+Mark is currently highly focused on `eforge`, which he is developing at `~/projects/eforge-build/eforge`. When brainstorming or drafting posts related to agentic coding, build systems, or eforge itself, use that repository as important background context. The public website is <https://www.eforge.build>, with LLM-oriented resources available at <https://www.eforge.build/llms.txt> and <https://www.eforge.build/llms-full.txt>.
+
+Daily generated news about the eforge/agentic coding space lives in `~/projects/daily/news/`. Use it as timely context for trend-aware brainstorming, comparisons, and responses to current developments.
