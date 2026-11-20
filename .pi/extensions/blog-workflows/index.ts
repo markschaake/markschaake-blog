@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
+import { chooseImageModel, DEFAULT_IMAGE_MODEL, generateOpenAIWebp, IMAGE_QUALITY, type ImageModel } from "./image-generation.ts";
 
 const POSTS_DIR = path.join("src", "content", "posts");
 const HERO_QUALITY = 80;
@@ -37,6 +38,7 @@ type GeneratedImageResult = {
 	post: Post;
 	outputPath: string;
 	prompt: string;
+	model: ImageModel;
 	size: string;
 	quality: string;
 	webpBytes: number;
@@ -437,44 +439,6 @@ async function chooseImageSize(ctx: any, kind: "hero" | "inline"): Promise<strin
 	return selected?.split(" — ")[0];
 }
 
-async function generateOpenAIWebp(prompt: string, size: string, signal?: AbortSignal): Promise<Buffer> {
-	const apiKey = process.env.OPENAI_API_KEY;
-	if (!apiKey) {
-		throw new Error("OPENAI_API_KEY is required for image generation");
-	}
-
-	const response = await fetch("https://api.openai.com/v1/images/generations", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${apiKey}`,
-		},
-		body: JSON.stringify({
-			model: "gpt-image-2",
-			prompt,
-			n: 1,
-			size,
-			quality: "medium",
-			output_format: "webp",
-			output_compression: 85,
-			background: "opaque",
-		}),
-		signal,
-	});
-
-	if (!response.ok) {
-		const text = await response.text();
-		throw new Error(`OpenAI image generation failed (${response.status}): ${text.slice(0, 800)}`);
-	}
-
-	const json = await response.json() as { data?: Array<{ b64_json?: string }> };
-	const b64 = json.data?.[0]?.b64_json;
-	if (!b64) {
-		throw new Error("OpenAI image generation response did not include data[0].b64_json");
-	}
-	return Buffer.from(b64, "base64");
-}
-
 async function runBuild(pi: ExtensionAPI, ctx: any, signal?: AbortSignal): Promise<BuildResult> {
 	ctx.ui.setStatus("blog", "running pnpm build");
 	const build = await pi.exec("pnpm", ["run", "build"], { cwd: ctx.cwd, signal, timeout: 120_000 });
@@ -488,7 +452,7 @@ function summarizeGeneratedImage(ctx: any, result: GeneratedImageResult): string
 		`Post: ${result.post.title} (${result.post.slug})`,
 		`Image: ${path.relative(ctx.cwd, result.outputPath)}`,
 		`Size: ${formatBytes(result.webpBytes)}`,
-		`Generation: gpt-image-2, ${result.size}, ${result.quality} quality, WebP`,
+		`Generation: ${result.model}, ${result.size}, ${result.quality} quality, WebP`,
 		result.markdownSnippet ? `Markdown: ${result.markdownSnippet}` : undefined,
 		result.inserted !== undefined ? `Inserted: ${result.inserted ? "yes" : "no"}` : undefined,
 		`Build: ${result.build.code === null && !result.build.stdout && !result.build.stderr ? "not run" : result.build.ok ? "passed" : `failed${result.build.code === null ? "" : ` (${result.build.code})`}`}`,
@@ -507,11 +471,14 @@ async function createGeneratedHeroImage(pi: ExtensionAPI, ctx: any, rawArgs: str
 	const prompt = await editImagePrompt(ctx, "Edit hero image prompt", defaultGeneratedImagePrompt(context, "hero"));
 	if (!prompt) return undefined;
 
+	const model = await chooseImageModel(ctx);
+	if (!model) return undefined;
+
 	const size = await chooseImageSize(ctx, "hero");
 	if (!size) return undefined;
 
 	if (ctx.hasUI) {
-		const ok = await ctx.ui.confirm("Generate hero image?", `This will call OpenAI gpt-image-2 and write src/content/posts/${post.slug}.webp.`);
+		const ok = await ctx.ui.confirm("Generate hero image?", `This will call OpenAI ${model} and write src/content/posts/${post.slug}.webp.`);
 		if (!ok) return undefined;
 	}
 
@@ -522,8 +489,8 @@ async function createGeneratedHeroImage(pi: ExtensionAPI, ctx: any, rawArgs: str
 	}
 
 	const result = await runWithLoader(ctx, `Generating hero image for ${post.slug}...`, async (signal) => {
-		ctx.ui.setStatus("blog", "generating hero image");
-		const image = await generateOpenAIWebp(prompt, size, signal);
+		ctx.ui.setStatus("blog", `generating hero image (${model})`);
+		const image = await generateOpenAIWebp(prompt, size, model, signal);
 		await writeFile(outputPath, image);
 
 		ctx.ui.setStatus("blog", "updating frontmatter");
@@ -532,7 +499,7 @@ async function createGeneratedHeroImage(pi: ExtensionAPI, ctx: any, rawArgs: str
 
 		const outputStats = await stat(outputPath);
 		const build = await runBuild(pi, ctx, signal);
-		return { kind: "hero", post, outputPath, prompt, size, quality: "medium", webpBytes: outputStats.size, build } satisfies GeneratedImageResult;
+		return { kind: "hero", post, outputPath, prompt, model, size, quality: IMAGE_QUALITY, webpBytes: outputStats.size, build } satisfies GeneratedImageResult;
 	});
 
 	ctx.ui.setStatus("blog", undefined);
@@ -572,6 +539,9 @@ async function createGeneratedInlineImage(pi: ExtensionAPI, ctx: any, rawArgs: s
 	const prompt = await editImagePrompt(ctx, "Edit inline image prompt", defaultGeneratedImagePrompt(context, "inline"));
 	if (!prompt) return undefined;
 
+	const model = await chooseImageModel(ctx);
+	if (!model) return undefined;
+
 	const size = await chooseImageSize(ctx, "inline");
 	if (!size) return undefined;
 
@@ -588,13 +558,13 @@ async function createGeneratedInlineImage(pi: ExtensionAPI, ctx: any, rawArgs: s
 	}
 
 	if (ctx.hasUI) {
-		const ok = await ctx.ui.confirm("Generate inline image?", `This will call OpenAI gpt-image-2 and write ${path.relative(ctx.cwd, outputPath)}.`);
+		const ok = await ctx.ui.confirm("Generate inline image?", `This will call OpenAI ${model} and write ${path.relative(ctx.cwd, outputPath)}.`);
 		if (!ok) return undefined;
 	}
 
 	const generated = await runWithLoader(ctx, `Generating inline image for ${post.slug}...`, async (signal) => {
-		ctx.ui.setStatus("blog", "generating inline image");
-		const image = await generateOpenAIWebp(prompt, size, signal);
+		ctx.ui.setStatus("blog", `generating inline image (${model})`);
+		const image = await generateOpenAIWebp(prompt, size, model, signal);
 		await writeFile(outputPath, image);
 		const outputStats = await stat(outputPath);
 		return { outputStats };
@@ -626,7 +596,7 @@ async function createGeneratedInlineImage(pi: ExtensionAPI, ctx: any, rawArgs: s
 		}
 	}
 
-	const result: GeneratedImageResult = { kind: "inline", post, outputPath, prompt, size, quality: "medium", webpBytes: generated.outputStats.size, altText, markdownSnippet, inserted, build };
+	const result: GeneratedImageResult = { kind: "inline", post, outputPath, prompt, model, size, quality: IMAGE_QUALITY, webpBytes: generated.outputStats.size, altText, markdownSnippet, inserted, build };
 	pi.sendMessage({ customType: "blog-workflows", content: summarizeGeneratedImage(ctx, result), display: true, details: result });
 	if (!result.inserted && ctx.hasUI) {
 		ctx.ui.setEditorText(`Add this image where it belongs in ${post.relativePath}:\n\n${markdownSnippet}`);
@@ -865,7 +835,7 @@ export default function blogWorkflows(pi: ExtensionAPI): void {
 	});
 
 	pi.registerCommand("blog-hero-create", {
-		description: "Generate a hero image with OpenAI gpt-image-2, save it, update frontmatter, and run the Astro build",
+		description: `Generate a hero image with an OpenAI model (default: ${DEFAULT_IMAGE_MODEL}), update frontmatter, and build`,
 		getArgumentCompletions: (prefix) => {
 			const completions = postCompletions(process.cwd(), prefix);
 			return completions.length > 0 ? completions : null;
@@ -876,7 +846,7 @@ export default function blogWorkflows(pi: ExtensionAPI): void {
 	});
 
 	pi.registerCommand("blog-image-create", {
-		description: "Generate an inline post image with OpenAI gpt-image-2 and provide or insert the Markdown snippet",
+		description: `Generate an inline image with an OpenAI model (default: ${DEFAULT_IMAGE_MODEL}) and provide or insert Markdown`,
 		getArgumentCompletions: (prefix) => {
 			const completions = postCompletions(process.cwd(), prefix);
 			return completions.length > 0 ? completions : null;
