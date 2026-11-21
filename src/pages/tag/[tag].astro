@@ -46,7 +46,7 @@ const { tag, posts, allTags } = Astro.props;
 	</head>
 	<body>
 		<Header />
-		<main class="page-grid">
+		<main id="main" class="page-grid">
 			<header class="page-title">
 				<p class="eyebrow">Tag</p>
 				<h1>#{tag}</h1>
@@ -93,7 +93,7 @@ const { tag, posts, allTags } = Astro.props;
 <style>
 	.eyebrow {
 		font-family: var(--font-mono);
-		color: var(--color-gray-500);
+		color: var(--color-ink-3);
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
@@ -104,17 +104,19 @@ const { tag, posts, allTags } = Astro.props;
 		margin: 0 0 0.5rem;
 	}
 
+	.count {
+		font-family: var(--font-mono);
+		color: var(--color-ink-3);
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		margin-bottom: 0;
+	}
+
 	.page-title {
 		margin-bottom: 2rem;
 		padding-bottom: 1.5rem;
-		border-bottom: 1px solid var(--color-gray-200);
-	}
-
-	.count {
-		font-family: var(--font-mono);
-		color: var(--color-gray-500);
-		font-size: 0.8125rem;
-		margin-bottom: 0;
+		border-bottom: 1px solid var(--color-rule);
 	}
 
 	.page-meta {
@@ -122,14 +124,14 @@ const { tag, posts, allTags } = Astro.props;
 		flex-direction: column;
 		gap: 0.75rem;
 		font-family: var(--font-mono);
-		font-size: 0.8125rem;
+		font-size: 0.75rem;
 		margin-bottom: 2rem;
 	}
 
 	.meta-label {
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-gray-500);
+		color: var(--color-ink-3);
 	}
 
 	.tag-list {
@@ -146,30 +148,28 @@ const { tag, posts, allTags } = Astro.props;
 		align-items: baseline;
 		gap: 0.5ch;
 		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--color-gray-600);
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-ink-3);
 		text-decoration: none;
-		padding: 0.125rem 0.5rem;
-		border: 1px solid var(--color-gray-300);
-		border-radius: 0.25rem;
+		padding: 0.1rem 0.5rem;
+		border: 1px solid var(--color-rule);
+		border-radius: 2px;
 		transition: color 0.15s ease, border-color 0.15s ease;
 	}
 
 	.tag:hover,
-	.tag:focus-visible {
+	.tag:focus-visible,
+	.tag.active {
 		color: var(--color-accent);
 		border-color: var(--color-accent);
 		text-decoration: none;
 	}
 
-	.tag.active {
-		color: var(--color-accent);
-		border-color: var(--color-accent);
-	}
-
 	.tag-count {
-		color: var(--color-gray-400);
-		font-size: 0.75rem;
+		color: var(--color-ink-3);
+		letter-spacing: 0.02em;
 	}
 
 	.tag.active .tag-count,
@@ -197,14 +197,12 @@ const { tag, posts, allTags } = Astro.props;
 			border: none;
 			padding: 0.125rem 0;
 			justify-content: space-between;
-			color: var(--color-gray-600);
 			width: 100%;
 		}
 
 		.tag:hover,
 		.tag:focus-visible,
 		.tag.active {
-			color: var(--color-accent);
 			border: none;
 		}
 
@@ -220,7 +218,7 @@ const { tag, posts, allTags } = Astro.props;
 	}
 
 	.posts li {
-		border-bottom: 1px solid var(--color-gray-200);
+		border-bottom: 1px solid var(--color-rule);
 	}
 
 	.posts li:last-child {
@@ -247,131 +245,54 @@ const { tag, posts, allTags } = Astro.props;
 
 	.title {
 		display: block;
-		color: var(--color-gray-900);
-		font-size: 1.25rem;
-		font-weight: 600;
+		font-family: var(--font-serif);
+		color: var(--color-ink);
+		font-size: 1.375rem;
+		line-height: 1.3;
+		font-weight: 500;
 		margin-bottom: 0.5rem;
+		transition: color 0.15s ease;
 	}
 
 	.badge {
 		display: inline-block;
-		padding: 0.125rem 0.5rem;
-		border-radius: 0.25rem;
-		border: 1px solid currentColor;
-		background: transparent;
+		padding: 0.05rem 0.4rem;
+		border: 1px solid var(--color-rule-2);
+		border-radius: 2px;
 		font-family: var(--font-mono);
-		font-size: 0.6875rem;
+		font-size: 0.625rem;
 		font-weight: 500;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-ink-3);
 		margin-left: 0.5rem;
-		vertical-align: middle;
+		vertical-align: 0.2em;
+		line-height: 1.5;
 	}
 
 	.handwritten {
-		color: #1d4ed8;
-	}
-
-	.ai-assisted {
-		color: var(--color-gray-500);
+		color: var(--color-accent);
+		border-color: var(--color-accent);
 	}
 
 	.draft {
-		color: #92400e;
+		color: var(--color-chart-amber);
+		border-color: currentColor;
 	}
 
 	.description {
 		display: block;
-		color: var(--color-gray-600);
+		color: var(--color-ink-2);
 		margin-bottom: 0.5rem;
 		line-height: 1.5;
 	}
 
 	.date {
 		display: block;
-		color: var(--color-gray-500);
-		font-size: 0.8125rem;
 		font-family: var(--font-mono);
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.page-title {
-			border-bottom-color: var(--color-gray-700);
-		}
-
-		.tag {
-			color: var(--color-gray-400);
-			border-color: var(--color-gray-700);
-		}
-
-		.tag:hover,
-		.tag:focus-visible,
-		.tag.active {
-			color: #60a5fa;
-			border-color: #60a5fa;
-		}
-
-		.tag-count {
-			color: var(--color-gray-500);
-		}
-
-		.tag.active .tag-count,
-		.tag:hover .tag-count,
-		.tag:focus-visible .tag-count {
-			color: #60a5fa;
-		}
-
-		@media (min-width: 1024px) {
-			.tag {
-				color: var(--color-gray-400);
-				border: none;
-			}
-
-			.tag:hover,
-			.tag:focus-visible,
-			.tag.active {
-				color: #60a5fa;
-				border: none;
-			}
-		}
-
-		.posts li {
-			border-bottom-color: var(--color-gray-700);
-		}
-
-		.title {
-			color: var(--color-gray-100);
-		}
-
-		.posts a:hover .title {
-			color: #60a5fa;
-		}
-
-		.posts a:visited .title {
-			color: var(--color-gray-400);
-		}
-
-		.posts a:visited:hover .title {
-			color: #60a5fa;
-		}
-
-		.handwritten {
-			color: #93c5fd;
-		}
-
-		.ai-assisted {
-			color: var(--color-gray-400);
-		}
-
-		.draft {
-			color: #fde68a;
-		}
-
-		.description {
-			color: var(--color-gray-400);
-		}
-
-		.posts a:visited .description {
-			color: var(--color-gray-500);
-		}
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-ink-3);
 	}
 </style>

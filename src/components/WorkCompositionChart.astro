@@ -10,8 +10,7 @@
 </div>
 
 <script>
-  import { Chart, registerables } from 'chart.js';
-  Chart.register(...registerables);
+  import { mountThemedChart } from '../lib/chart-theme';
 
   // Illustrative data: 13 weeks of cross-project work composition
   // Refactor is bursty - large chunks some weeks, absent others
@@ -31,13 +30,7 @@
   const docs     = [ 0,  5,  0,  5,  5, 10,  5,  5,  0,  5,  0, 10,  5];
   const ops      = [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5];
 
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
-  const tickColor = isDark ? '#9ca3af' : '#6b7280';
-
-  const ctx = document.getElementById('work-composition-chart') as HTMLCanvasElement;
-
-  new Chart(ctx, {
+  mountThemedChart('work-composition-chart', (t) => ({
     type: 'bar',
     data: {
       labels,
@@ -45,37 +38,37 @@
         {
           label: 'Feature',
           data: feature,
-          backgroundColor: '#06b6d4',
+          backgroundColor: t.accent,
         },
         {
           label: 'Fix',
           data: fix,
-          backgroundColor: '#f59e0b',
+          backgroundColor: t.amber,
         },
         {
           label: 'Refactor',
           data: refactor,
-          backgroundColor: '#10b981',
+          backgroundColor: t.emerald,
         },
         {
           label: 'Rework',
           data: rework,
-          backgroundColor: '#f43f5e',
+          backgroundColor: t.rose,
         },
         {
           label: 'Test',
           data: test,
-          backgroundColor: '#a78bfa',
+          backgroundColor: t.violet,
         },
         {
           label: 'Docs',
           data: docs,
-          backgroundColor: '#64748b',
+          backgroundColor: t.slate,
         },
         {
           label: 'Ops',
           data: ops,
-          backgroundColor: '#78716c',
+          backgroundColor: t.stone,
         },
       ],
     },
@@ -91,7 +84,7 @@
         legend: {
           position: 'bottom',
           labels: {
-            color: tickColor,
+            color: t.tick,
             usePointStyle: true,
             pointStyle: 'circle',
             padding: 16,
@@ -107,17 +100,17 @@
       scales: {
         x: {
           stacked: true,
-          grid: { color: gridColor },
+          grid: { color: t.grid },
           ticks: {
-            color: tickColor,
+            color: t.tick,
             font: { size: 11 },
           },
         },
         y: {
           stacked: true,
-          grid: { color: gridColor },
+          grid: { color: t.grid },
           ticks: {
-            color: tickColor,
+            color: t.tick,
             callback: (value) => `${value}%`,
             font: { size: 11 },
           },
@@ -126,31 +119,5 @@
         },
       },
     },
-  });
+  }));
 </script>
-
-<style>
-  .chart-container {
-    background-color: #1f2937;
-    border-radius: 0.5rem;
-    padding: 1.25rem 1.25rem 0.75rem;
-    margin: 1.5rem 0;
-  }
-
-  .chart-header {
-    padding: 0 0.25rem 0.75rem;
-  }
-
-  .chart-title {
-    color: #f3f4f6;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  .chart-subtitle {
-    color: #9ca3af;
-    font-size: 0.8125rem;
-    line-height: 1.4;
-  }
-</style>

@@ -3,6 +3,7 @@ import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 ---
 
+<a class="skip-link" href="#main">Skip to content</a>
 <header>
 	<nav>
 		<a href="/" class="site-title" aria-label={SITE_TITLE}>
@@ -43,10 +44,10 @@ import HeaderLink from './HeaderLink.astro';
 
 <style>
 	header {
-		background: color-mix(in srgb, var(--color-gray-50) 90%, transparent);
+		background: var(--color-header-bg);
 		backdrop-filter: saturate(180%) blur(10px);
 		-webkit-backdrop-filter: saturate(180%) blur(10px);
-		border-bottom: 1px solid var(--color-gray-200);
+		border-bottom: 1px solid var(--color-rule);
 		position: sticky;
 		top: 0;
 		z-index: 50;
@@ -66,7 +67,7 @@ import HeaderLink from './HeaderLink.astro';
 		font-family: var(--font-mono);
 		font-size: 1.0625rem;
 		font-weight: 500;
-		color: var(--color-gray-900);
+		color: var(--color-ink);
 		text-decoration: none;
 		letter-spacing: -0.01em;
 		display: inline-flex;
@@ -75,7 +76,7 @@ import HeaderLink from './HeaderLink.astro';
 	}
 
 	.site-title:hover {
-		color: var(--color-gray-900);
+		color: var(--color-ink);
 		text-decoration: none;
 	}
 
@@ -84,7 +85,7 @@ import HeaderLink from './HeaderLink.astro';
 	}
 
 	.prompt {
-		color: var(--color-terminal);
+		color: var(--color-accent);
 		margin-right: 0.5ch;
 		font-weight: 600;
 	}
@@ -97,7 +98,7 @@ import HeaderLink from './HeaderLink.astro';
 		display: inline-block;
 		width: 0.55ch;
 		height: 1.05em;
-		background-color: var(--color-terminal);
+		background-color: var(--color-accent);
 		margin-left: 0.3ch;
 		transform: translateY(0.15em);
 		animation: cursor-blink 1.06s steps(1) infinite;
@@ -127,14 +128,14 @@ import HeaderLink from './HeaderLink.astro';
 	}
 
 	.social-links a {
-		color: var(--color-gray-500);
+		color: var(--color-ink-3);
 		transition: color 0.15s ease;
 		display: inline-flex;
 		align-items: center;
 	}
 
 	.social-links a:hover {
-		color: var(--color-gray-900);
+		color: var(--color-ink);
 	}
 
 	@media (max-width: 640px) {
@@ -153,33 +154,6 @@ import HeaderLink from './HeaderLink.astro';
 
 		.site-title {
 			font-size: 1rem;
-		}
-	}
-
-	@media (prefers-color-scheme: dark) {
-		header {
-			background: color-mix(in srgb, var(--color-gray-900) 85%, transparent);
-			border-bottom-color: var(--color-gray-700);
-		}
-
-		.site-title {
-			color: var(--color-gray-50);
-		}
-
-		.site-title:hover {
-			color: var(--color-gray-50);
-		}
-
-		.site-title:hover .wordmark {
-			color: #60a5fa;
-		}
-
-		.social-links a {
-			color: var(--color-gray-400);
-		}
-
-		.social-links a:hover {
-			color: var(--color-gray-50);
 		}
 	}
 </style>

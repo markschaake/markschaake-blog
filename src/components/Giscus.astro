@@ -10,6 +10,11 @@ const { repo, repoId, category, categoryId } = GISCUS;
 	define:vars={{ repo, repoId, category, categoryId }}
 	is:inline
 >
+	// Custom themes live in /public/giscus and follow the reader's colour scheme.
+	const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+	const themeUrl = () =>
+		new URL(darkQuery.matches ? '/giscus/dark.css' : '/giscus/light.css', window.location.origin).href;
+
 	const script = document.createElement('script');
 	script.src = 'https://giscus.app/client.js';
 	script.setAttribute('data-repo', repo);
@@ -21,11 +26,25 @@ const { repo, repoId, category, categoryId } = GISCUS;
 	script.setAttribute('data-reactions-enabled', '1');
 	script.setAttribute('data-emit-metadata', '0');
 	script.setAttribute('data-input-position', 'bottom');
-	script.setAttribute('data-theme', 'preferred_color_scheme');
+	script.setAttribute('data-theme', themeUrl());
 	script.setAttribute('data-lang', 'en');
 	script.setAttribute('data-loading', 'lazy');
 	script.setAttribute('crossorigin', 'anonymous');
 	script.async = true;
 
-	document.getElementById('giscus').appendChild(script);
+	const container = document.getElementById('giscus');
+	container.appendChild(script);
+
+	const onSchemeChange = () => {
+		if (!container.isConnected) {
+			darkQuery.removeEventListener('change', onSchemeChange);
+			return;
+		}
+		const frame = container.querySelector('iframe.giscus-frame');
+		frame?.contentWindow?.postMessage(
+			{ giscus: { setConfig: { theme: themeUrl() } } },
+			'https://giscus.app',
+		);
+	};
+	darkQuery.addEventListener('change', onSchemeChange);
 </script>

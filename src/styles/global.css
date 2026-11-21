@@ -1,32 +1,88 @@
-@import "@fontsource-variable/ibm-plex-sans";
-@import "@fontsource/ibm-plex-mono/400.css";
-@import "@fontsource/ibm-plex-mono/500.css";
-@import "@fontsource/ibm-plex-mono/600.css";
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+/*
+ * Design tokens, shared with schaake.solutions: paper / ink / accent.
+ * Light values live in @theme; the dark palette overrides the same
+ * variables under prefers-color-scheme below.
+ */
+@theme static {
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Charter, "Bitstream Charter", Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --color-accent: #2563eb;
-  --color-accent-dark: #1d4ed8;
-  --color-terminal: #22c55e;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  --color-paper: #f6f4ef;
+  --color-panel: #efebe2;
+  --color-panel-2: #e8e3d6;
+  --color-ink: #0f172a;
+  --color-ink-2: #334155;
+  --color-ink-3: #5b6577;
+  --color-rule: #d9d4c7;
+  --color-rule-2: #c4bdac;
+  --color-accent: #0e7490;
+  --color-accent-hover: #155e75;
+  --color-on-accent: #ffffff;
+  --color-code-bg: #0f172a;
+  --color-code-fg: #cbd5e1;
+  --color-code-border: #0f172a;
+  --color-header-bg: color-mix(in srgb, #f6f4ef 90%, transparent);
+
+  /* chart.js series, read by src/lib/chart-theme.ts */
+  --color-chart-accent: #0e7490;
+  --color-chart-amber: #b45309;
+  --color-chart-rose: #be123c;
+  --color-chart-violet: #6d28d9;
+  --color-chart-emerald: #047857;
+  --color-chart-slate: #64748b;
+  --color-chart-stone: #a8a29e;
+  --color-chart-grid: rgba(15, 23, 42, 0.08);
+  --color-chart-tick: #5b6577;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #020618;
+    --color-panel: #0f172b;
+    --color-panel-2: #1d293d;
+    --color-ink: #f1f5f9;
+    --color-ink-2: #cad5e2;
+    --color-ink-3: #90a1b9;
+    --color-rule: #314158;
+    --color-rule-2: #45556c;
+    --color-accent: #00d3f3;
+    --color-accent-hover: #53eafd;
+    --color-on-accent: #020618;
+    --color-code-bg: #0f172b;
+    --color-code-fg: #cad5e2;
+    --color-code-border: #314158;
+    --color-header-bg: color-mix(in srgb, #020618 85%, transparent);
+
+    --color-chart-accent: #00d3f3;
+    --color-chart-amber: #fbbf24;
+    --color-chart-rose: #fb7185;
+    --color-chart-violet: #a78bfa;
+    --color-chart-emerald: #34d399;
+    --color-chart-slate: #94a3b8;
+    --color-chart-stone: #78716c;
+    --color-chart-grid: rgba(255, 255, 255, 0.08);
+    --color-chart-tick: #90a1b9;
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
 }
 
 html {
   font-family: var(--font-sans);
-  background-color: var(--color-gray-50);
-  color: var(--color-gray-800);
+  background-color: var(--color-paper);
+  color: var(--color-ink-2);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -37,11 +93,33 @@ body {
   line-height: 1.7;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0.75rem;
+}
+
+.skip-link:focus {
+  left: 0.75rem;
+  z-index: 60;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
 main {
   width: 100%;
   max-width: 42rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
 }
 
 /* Widescreen: two-track grid with a meta rail left of the prose column. */
@@ -77,7 +155,7 @@ main.page-grid > * {
   main.page-grid > .page-title,
   main.page-grid > .page-body {
     grid-column: 2;
-    border-left: 1px solid var(--color-gray-200);
+    border-left: 1px solid var(--color-rule);
     padding-left: 2.5rem;
   }
 
@@ -86,16 +164,17 @@ main.page-grid > * {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: var(--color-gray-900);
+  font-family: var(--font-serif);
+  color: var(--color-ink);
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.2;
   margin: 0 0 0.5rem 0;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   overflow-wrap: break-word;
 }
 
-h1 { font-size: 2.25rem; font-weight: 700; letter-spacing: -0.02em; }
-h2 { font-size: 1.75rem; }
+h1 { font-size: 2.5rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; }
+h2 { font-size: 1.75rem; font-weight: 500; }
 h3 { font-size: 1.375rem; }
 h4 { font-size: 1.125rem; }
 
@@ -106,17 +185,26 @@ a {
 }
 
 a:hover {
-  color: var(--color-accent-dark);
+  color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
 p {
-  margin-bottom: 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+/* Mono uppercase label: dates, tags, badges, captions, table headers */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
 }
 
 /* Prose styles for blog content */
 .prose {
-  color: var(--color-gray-700);
+  color: var(--color-ink-2);
 }
 
 .prose p {
@@ -124,7 +212,7 @@ p {
 }
 
 .prose h2 {
-  margin-top: 2.5rem;
+  margin-top: 2.75rem;
   margin-bottom: 1rem;
 }
 
@@ -133,94 +221,208 @@ p {
   margin-bottom: 0.75rem;
 }
 
+.prose a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
 .prose ul, .prose ol {
-  @apply my-6 pl-6;
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
 }
 
 .prose ul {
-  @apply list-disc;
+  list-style: disc;
 }
 
 .prose ol {
-  @apply list-decimal;
+  list-style: decimal;
 }
 
 .prose li {
-  @apply my-2 pl-1;
+  margin: 0.5rem 0;
+  padding-left: 0.25rem;
 }
 
 .prose li::marker {
-  color: var(--color-gray-500);
+  color: var(--color-ink-3);
+}
+
+.prose ol > li::marker {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
 }
 
 .prose blockquote {
-  border-left: 4px solid var(--color-accent);
-  margin: 1.5rem 0;
-  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin: 2rem 0;
+  padding: 0.25rem 0 0.25rem 1.5rem;
+  border-left: 2px solid var(--color-accent);
+  font-family: var(--font-serif);
   font-style: italic;
-  color: var(--color-gray-600);
+  font-size: 1.3125rem;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.prose blockquote p {
+  margin: 0;
+}
+
+.prose blockquote p + p {
+  margin-top: 1rem;
 }
 
 .prose code {
   font-family: var(--font-mono);
-  font-size: 0.875em;
-  background-color: var(--color-gray-100);
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  font-size: 0.85em;
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  color: var(--color-ink);
+  padding: 0.05rem 0.35rem;
+  border-radius: 3px;
 }
 
-.prose pre {
+/* Shiki (github-dark) sets an inline #24292e background; pin it to ink. */
+.prose pre,
+.prose pre.astro-code {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  background-color: var(--color-gray-800);
-  color: var(--color-gray-100);
-  padding: 1.25rem;
-  border-radius: 0.5rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  background-color: var(--color-code-bg) !important;
+  color: var(--color-code-fg);
+  border: 1px solid var(--color-code-border);
+  padding: 1.1rem 1.25rem;
+  border-radius: 4px;
   overflow-x: auto;
   margin: 1.5rem 0;
 }
 
 .prose pre code {
   background: none;
+  border: 0;
   padding: 0;
   color: inherit;
+  font-size: inherit;
+}
+
+.prose figure {
+  margin: 2rem 0;
 }
 
 .prose img {
+  display: block;
   max-width: 100%;
   height: auto;
-  border-radius: 0.5rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 3px;
   margin: 1.5rem 0;
+}
+
+.prose figure img {
+  margin: 0;
+}
+
+.prose figcaption {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  line-height: 1.5;
 }
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--color-gray-200);
-  margin: 2rem 0;
+  border-top: 1px solid var(--color-rule);
+  margin: 2.5rem 0;
 }
 
 .prose table {
-  @apply w-full my-6 border-collapse text-[0.9375rem] leading-normal block overflow-x-auto;
+  width: 100%;
+  margin: 1.75rem 0;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  display: block;
+  overflow-x: auto;
+  font-variant-numeric: tabular-nums;
 }
 
 .prose thead {
-  @apply bg-gray-100 border-b-2 border-gray-300;
+  border-bottom: 1px solid var(--color-ink);
 }
 
 .prose th {
-  @apply py-2.5 px-3.5 text-left font-semibold text-gray-900;
+  padding: 0.55rem 0.85rem;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  vertical-align: bottom;
 }
 
 .prose td {
-  @apply py-2.5 px-3.5 border-b border-gray-200 align-top;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--color-rule);
+  vertical-align: top;
+}
+
+.prose th:first-child,
+.prose td:first-child {
+  padding-left: 0;
 }
 
 .prose tbody tr:last-child td {
-  @apply border-b-0;
+  border-bottom-color: var(--color-rule-2);
 }
 
 .prose table code {
-  @apply text-[0.8125em] bg-transparent p-0;
+  font-size: 0.8125em;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* chart.js containers (components in src/components/*Chart.astro) */
+.chart-container {
+  border: 1px solid var(--color-rule);
+  background-color: var(--color-panel);
+  border-radius: 4px;
+  padding: 1.1rem 1.25rem 0.9rem;
+  margin: 1.75rem 0;
+}
+
+.chart-header {
+  padding: 0 0 0.6rem;
+}
+
+.chart-title {
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.chart-subtitle {
+  color: var(--color-ink-3);
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }
 
 /* Screen reader only */
@@ -241,65 +443,15 @@ p {
     font-size: 1rem;
   }
 
-  h1 { font-size: 1.875rem; }
-  h2 { font-size: 1.375rem; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.4375rem; }
   h3 { font-size: 1.1875rem; }
 
   main {
-    padding: 1.5rem 1rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    background-color: var(--color-gray-900);
-    color: var(--color-gray-200);
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    color: var(--color-gray-50);
-  }
-
-  a {
-    color: #60a5fa;
-  }
-
-  a:hover {
-    color: #93c5fd;
-  }
-
-  .prose {
-    color: var(--color-gray-300);
+    padding: 1.75rem 1.125rem;
   }
 
   .prose blockquote {
-    color: var(--color-gray-400);
-  }
-
-  .prose code {
-    background-color: var(--color-gray-800);
-  }
-
-  .prose hr {
-    border-top-color: var(--color-gray-700);
-  }
-
-  .prose thead {
-    @apply bg-gray-800 border-gray-600;
-  }
-
-  .prose th {
-    @apply text-gray-50;
-  }
-
-  .prose td {
-    @apply border-gray-700;
-  }
-
-  @media (min-width: 1024px) {
-    main.page-grid > .page-title,
-    main.page-grid > .page-body {
-      border-left-color: var(--color-gray-700);
-    }
+    font-size: 1.1875rem;
   }
 }
