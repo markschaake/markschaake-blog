@@ -1,50 +1,42 @@
 ---
 title: "The Next Operating System"
-description: "Replacing a tennis club's software backbone while most people still live in the old one - and seeing a future they can't see yet."
-pubDate: 2026-10-28
-draft: true
-llms: ["grok-bot"]
-tags: ["ai", "product", "communities", "agentic-software", "ytc"]
+description: "Replacing a tennis club's software backbone means more than swapping screens - it brings policy, habit and trust along with it."
+pubDate: 2026-11-20
+draft: false
+llms: ["grok-bot", "claude-opus-5-5"]
+tags: ["ai", "product", "community", "agentic-software"]
 ---
 
-A month into live use, the member portal at my tennis club is smoother than I expected. Operations have been steady. Members are finding their way. The incumbent software - Club Automation - still sits in the background of people's habits, but the day-to-day work of belonging to the club is already happening somewhere else.
+A month into live use, the new member portal at my tennis club is running more smoothly than I expected. Operations have been steady and members are finding their way around, even though years of habit built around the old system don't disappear in a month.
 
-This started as a pro bono passion project: replace the club's software backbone with something built for us. What it has become is harder to name cleanly. I'm not just swapping screens. I'm building the next operating system for a place I care about, while most members and staff still live inside the old one - and while I can already see an agentified membership experience that isn't visible to them yet.
-
-Software that becomes the OS of a business never stays technical. It surfaces politics. It collides with policy. The interpersonal work shows up whether I planned for it or not.
+This started as a pro bono project - replace the club's software with something [built for us](/posts/building-for-communities-you-belong-to). It has turned into something bigger than swapping screens. Software that runs a club's reservations, billing and communication becomes its operating system, and an operating system never stays technical. It runs into policy, into habit, and into how people feel about change, whether I planned for that or not.
 
 ## What Ace is for
 
-The membership experience I'm aiming for is AI-first in a way that should feel natural rather than flashy. The point isn't a chatbot bolted onto a reservation form. It's that self-service becomes discoverable - that a member who wants something can find it without already knowing which menu hides it.
+The membership experience I'm aiming for is AI-first in a way that should feel natural rather than flashy. The point isn't a chatbot bolted onto a reservation form - it's making self-service discoverable, so a member who wants something can find it without already knowing which menu hides it.
 
-Ace is the member-facing assistant for that. It's rolling into the product as the place where features show up in conversation instead of only in navigation. Next week the private-lesson availability flow lands as a concrete example. Instructors block future court time as available. A member sees a homepage nudge - Kathleen has time open - and that opens Ace with presets for thirty or sixty minutes, plus room for natural conversation. Booking for someone else on the account is part of the same flow.
+Ace is the member-facing assistant for that, the place where features show up in conversation and not only in navigation. Private-lesson booking is the first concrete example. Pros mark future court time as available, a member sees a nudge on the homepage that one of the pros has time open, and that opens Ace with presets for thirty or sixty minutes plus room to just ask. Booking a lesson for someone else on the account is part of the same flow.
 
-That is a small surface. Underneath it is a different idea of how a club should work: the system notices availability, surfaces it, and helps the member act without making them hunt. The old software couldn't do that. Waiting on a vendor ticket for it would have been a multi-year joke. Building it ourselves means the future can show up in pieces people can touch.
+It's a small feature, but it carries a different idea of how a club's software should work - the system notices availability, surfaces it, and helps the member act without making them hunt. Off-the-shelf club software is built for hundreds of clubs at once, and a feature shaped around how our pros actually teach would have been a long wait in someone else's queue. Building it ourselves means the future arrives in pieces people can touch.
 
-## Who can see it
+## Earning trust
 
-I under-promise, with a confident expectation of over-delivering. That has already been the pattern this month. Skepticism is still understandable. Plenty of people have lived through the opposite - big claims, thin delivery - and software rollouts at clubs and small organizations have a reputation for disruption that outruns benefit.
+I try to under-promise and over-deliver, and so far this month that has held. Skepticism is still reasonable. Most people have lived through the opposite - big claims, thin delivery - and software changes at clubs and small organizations have a reputation for disruption that outruns the benefit.
 
-Kathleen, one of our tennis pros, is the clearest counterexample so far. She was early-skeptical, which I expected. I looped her into demos and training anyway. She cares about the member experience, and once she could see what the system was becoming, she had real epiphanies and bought in. She also works marketing at White Pass and already uses AI heavily there. When I enabled MCP so Claude could connect to her club account and draft club-branded emails into the club email system, that landed hard. The abstract promise became a concrete tool in her hands.
+What has worked best is showing people the thing rather than describing it. One of our pros was skeptical early on, which I expected and respected. I brought them into demos and training anyway, because they care about the member experience as much as anyone, and once they could see where the system was going they became one of its strongest advocates. When I connected the portal to Claude so they could draft club-branded emails from their own account, the abstract promise turned into a tool they use.
 
-There is another pattern on the tennis-leadership side that I hear secondhand rather than face to face: concern that the software change is a huge mistake. I take that seriously as a signal even when it doesn't come to me directly. Some of it is disruption anxiety - workflows and revenue rhythms that used to be stable suddenly sit on new ground. Some of it is the gap between seeing member experience improve and feeling the cost of changing how you work. I don't get to resolve that gap by arguing harder. I get to keep shipping things that make the new direction feel better than the old one for the people who use it every day.
+Change still has a cost for the people who use the system every day - workflows that were settled now sit on new ground, and a better member experience doesn't make that disappear. What I can do is keep shipping things that make the new way better than the old one for the people living with it.
 
-## Workarounds as a tell
+## Workarounds as a signal
 
-An older mindset is still active: work with what we have. I found people routing around a missing capability by stretching another feature instead of asking for the right fix. I had already built the enabling piece, but the cue hadn't stuck - Provide feedback - so the system that can change fast was being treated like the vendor software that couldn't.
+A few weeks in, I noticed people working around a missing capability by stretching another feature to cover it. That's a completely sensible instinct after years with vendor software, where a request meant a ticket and a long wait, and making do was usually the fastest path. The fix in this case already existed, and so did a feedback button for exactly this kind of gap - I just hadn't made either obvious enough.
 
-That habit made sense under Club Automation. You submitted a ticket and waited. You learned not to ask. The new portal is different on purpose. A gap can become a change request, and a change request can land while the conversation is still warm. The cultural shift is slower than the engineering one. People have to believe the feedback loop is real before they stop improvising around holes.
+The new portal is meant to work differently. A gap can become a change request, and the change can land while the conversation is still fresh. The cultural shift is slower than the engineering one, and that's on me as much as anyone - people have to see the feedback loop work a few times before it's worth trusting over a workaround.
 
-## When the OS meets policy
+## When the software meets policy
 
-Then there are collisions that aren't about features at all.
-
-The club had a card-surcharge policy before cutover. On Stripe, that policy doesn't sit cleanly. Processing fees are the same shape either way, and surcharging debit isn't allowed even though Stripe still charges the club for those payments. Without card-type detection, debit payers got surcharged by accident and were upset - which is a reasonable response to being charged a fee the rules don't permit.
-
-My preference is to drop surcharges and cover processing in pricing rather than punish people for how they pay. The alternative - full debit-versus-credit detection - adds complexity, staff training, and a final amount you can't quote until after the tap. I dislike that path. A longer-horizon idea is Match Points: a karma-like reward for engagement that could also become account credit sized to the savings from ACH, reward instead of punishment. That one carries accounting complexity and likely bylaw work. It's a future suggestion, not a shipped answer.
-
-What matters for this post is the shape of the collision. Replace the operating system and pre-existing policy stops being abstract. The software makes the awkwardness visible. People who were comfortable with the old arrangement feel the pressure of a clearer picture, and the builder has to decide whether to encode a bad rule more carefully or change the rule.
+Some of the friction isn't about features at all. A payment policy that worked fine on the old system became visible the moment the system changed, because the new software couldn't carry it over without someone deciding exactly how it should work. That decision belongs to the club and its board, not to me. What the software does is force the choice into the open - encode the rule more carefully, or revisit it.
 
 ---
 
-The code is the easier part. Agents, harnesses, overnight merge trains - those I know how to run. The harder work is holding a future most of the club can't see yet, shipping pieces of it gently enough that people can climb aboard without being dragged, and noticing when resistance, workarounds, or policy friction are telling me something the backlog isn't.
+The code is the easier part. Agents, harnesses, overnight merge trains - those I know how to run. The harder work is shipping a future in pieces small enough that people can step into it on their own terms, and paying attention when workarounds, hesitation or a policy snag are telling me something the backlog isn't.
