@@ -12,7 +12,7 @@ pnpm run preview  # Preview production build locally
 
 ## Architecture
 
-This is an Astro 5 static blog with MDX support, Tailwind CSS v4, and Vercel deployment.
+This is an Astro 6 static blog with MDX support, Tailwind CSS v4, and Vercel deployment.
 
 ### Content System
 
@@ -39,6 +39,12 @@ llms: ["opus-4.6", "gpt-5.5"]
 ### Styling
 
 Tailwind v4 is configured entirely in `src/styles/global.css` using CSS `@theme` blocks (no tailwind.config.js). Custom color variables and typography scales are defined there.
+
+- **Colour tokens**: a paper / ink / accent palette (`--color-paper`, `--color-ink`, `--color-accent` and their variants, plus `--color-chart-*` series colours). Light values live in `@theme`; dark mode overrides the same variables under `@media (prefers-color-scheme: dark)`, so components use the tokens and never need their own dark variants.
+- **Type**: system font stacks only (`--font-serif` for headings, `--font-sans` for body, `--font-mono` for labels and code). No web fonts; don't add any.
+- **Shared with schaake.solutions**: the colour and type tokens match that site. Its `src/styles/global.css` is the source of truth; change tokens there first, then mirror them here.
+- **Charts**: chart.js components (`src/components/*Chart.astro`) must use the shared helper `src/lib/chart-theme.ts` (`mountThemedChart`) and take colours from the theme it passes in. Don't hardcode colours; the helper reads the CSS tokens and redraws when the colour scheme changes.
+- **Comments**: Giscus themes live in `public/giscus/light.css` and `public/giscus/dark.css`, which layer the site tokens over giscus' stock themes. Keep them in step with the tokens in `global.css`.
 
 ### Site Configuration
 

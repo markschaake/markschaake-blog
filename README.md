@@ -1,62 +1,52 @@
-# Astro Starter Kit: Blog
+# markschaake.com
 
-```sh
-npm create astro@latest -- --template blog
+Source for [www.markschaake.com](https://www.markschaake.com), Mark Schaake's blog.
+
+## Stack
+
+- [Astro](https://astro.build) 6, static output, with MDX
+- [Tailwind CSS](https://tailwindcss.com) 4 via `@tailwindcss/vite`, configured in `src/styles/global.css`
+- [Chart.js](https://www.chartjs.org) for charts in posts
+- [Giscus](https://giscus.app) for comments (GitHub Discussions)
+- RSS (`@astrojs/rss`) and sitemap (`@astrojs/sitemap`)
+- pnpm, Node 22
+- Hosted on [Vercel](https://vercel.com)
+
+## Running locally
+
+```bash
+pnpm install
+pnpm run dev      # dev server at http://localhost:4321
+pnpm run build    # production build to ./dist/
+pnpm run preview  # serve the production build locally
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Posts
 
-Features:
+Posts live in `src/content/posts/` as `.md` or `.mdx` files; the file name is the URL slug (`/posts/<slug>/`). Images used by a post sit next to it.
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+Frontmatter is validated by the schema in `src/content.config.ts`, which is the source of truth. Currently:
 
-## 🚀 Project Structure
+| Field | Type | Default |
+| :-- | :-- | :-- |
+| `title` | string | required |
+| `description` | string | required |
+| `pubDate` | date | required |
+| `updatedDate` | date | optional |
+| `draft` | boolean | `false` |
+| `handwritten` | boolean | `false` |
+| `llms` | string[] | `[]` |
+| `tags` | string[] | `[]` |
+| `comments` | boolean | `true` |
+| `heroImage` | local image | optional |
+| `ogImage` | local image | optional |
 
-Inside of your Astro project, you'll see the following folders and files:
+### Drafts
 
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
-```
+Set `draft: true` to keep a post unpublished. Drafts show up (with a draft badge) in `pnpm run dev`, but are excluded from production builds and from the RSS feed.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Deploys
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- Pushing to `main` deploys to production on Vercel.
+- Other branches get Vercel preview deployments, which are protected (not publicly viewable).
+- GitHub Actions (`.github/workflows/ci.yml`) only runs `pnpm install --frozen-lockfile` and `pnpm run build` on pushes and pull requests to `main`; it does not deploy.
